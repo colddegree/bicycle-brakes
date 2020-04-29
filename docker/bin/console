@@ -1,0 +1,4 @@
+#!/bin/sh
+
+docker-compose exec -T php-fpm php bin/console $@
+
