@@ -29,7 +29,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - mysql-data:/var/lib/mysql
+      - diagnostics-mysql-data:/var/lib/mysql
 
   yarn:
     build:
@@ -42,4 +42,4 @@ services:
       - ../:/app
 
 volumes:
-  mysql-data: {}
+  diagnostics-mysql-data: {}
