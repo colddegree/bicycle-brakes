@@ -26,6 +26,8 @@ services:
   mysql:
     image: mysql:5.7.29
     container_name: 'diagnostics-mysql'
+    ports:
+      - "13307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
