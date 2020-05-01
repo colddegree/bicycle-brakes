@@ -37,7 +37,7 @@ services:
       dockerfile: Dockerfile
     container_name: 'diagnostics-yarn'
     working_dir: /app
-    user: 'node'
+#    user: 'node'
     volumes:
       - ../:/app
 
