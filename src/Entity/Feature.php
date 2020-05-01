@@ -13,6 +13,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Feature
 {
+    public const TYPE_SCALAR = 1;
+    public const TYPE_INT = 2;
+    public const TYPE_REAL = 3;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -25,8 +29,14 @@ class Feature
      */
     public string $name;
 
-    public function __construct(string $name)
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    public int $type;
+
+    public function __construct(string $name, int $type)
     {
         $this->name = $name;
+        $this->type = $type;
     }
 }
