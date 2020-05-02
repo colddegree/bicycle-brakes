@@ -22,7 +22,7 @@ class Feature
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    public ?int $id;
+    public ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -38,5 +38,19 @@ class Feature
     {
         $this->name = $name;
         $this->type = $type;
+    }
+
+    public static function fromArray(array $arr): self
+    {
+        return new self($arr['name'], (int)$arr['type']);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'type' => $this->type,
+        ];
     }
 }

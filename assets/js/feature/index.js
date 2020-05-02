@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import FeatureList from './FeatureList';
+import FeatureListForm from './FeatureListForm';
 
 const root = document.getElementById('root');
 const data = JSON.parse(root.getAttribute('data-json-encoded'));
 
-ReactDOM.render(<FeatureList features={data} />, root);
+ReactDOM.render(<FeatureListForm features={data} />, root);
