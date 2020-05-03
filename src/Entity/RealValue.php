@@ -12,8 +12,8 @@ use DomainException;
  */
 class RealValue
 {
-    public const MIN = 2.2250738585072E-308; // 4 byte single precision float min value
-    public const MAX = 1.7976931348623E+308; // 4 byte single precision float max value
+    public const MIN = -1000000000.0; // 1 billion
+    public const MAX = 1000000000.0; // 1 billion
 
     /**
      * @ORM\Id()

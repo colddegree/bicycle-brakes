@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { INT_MAX, INT_MIN } from "./constraints";
+import { INT_MIN, INT_MAX } from "./constraints";
 
 const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
     return <>
@@ -35,7 +35,7 @@ const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
             </React.Fragment>
         ))}
         <button onClick={event => { event.preventDefault(); onAdd(featureId); }}>Добавить целочисленное значение</button>
-    </>
+    </>;
 };
 
 IntValues.propTypes = {

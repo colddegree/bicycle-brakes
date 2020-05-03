@@ -1,2 +1,5 @@
 export const INT_MIN = -9223372036854775808;
 export const INT_MAX = 9223372036854775807;
+
+export const REAL_MIN = -1000000000.0;
+export const REAL_MAX = 1000000000.0;

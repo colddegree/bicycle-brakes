@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ScalarValues from "./ScalarValues";
 import deepcopy from 'deepcopy';
 import * as types from '../feature/types'
 import IntValues from "./IntValues";
+import RealValues from "./RealValues";
 
 const Root = props => {
     const [features, setFeatures] = useState(props.features);
-    const [selectedFeatureId, setSelectedFeatureId] = useState(0);
+    const [selectedFeatureId, setSelectedFeatureId] = useState(features.length > 0 ? features[0].id : 0);
 
     const initialNewId = -1;
     const [latestNewId, setLatestNewId] = useState(initialNewId);
@@ -15,11 +16,9 @@ const Root = props => {
     const [updatedIds, setUpdatedIds] = useState(new Set());
     const [deletedIds, setDeletedIds] = useState(new Set());
 
-    useEffect(() => {
-        if (features.length > 0) {
-            setSelectedFeatureId(features[0].id);
-        }
-    }, []);
+    if (features.length === 0) {
+        return 'Нет признаков';
+    }
 
     const onSelect = ({ target }) => {
         setSelectedFeatureId(+target.value);
@@ -41,9 +40,9 @@ const Root = props => {
             case types.REAL.id:
                 return {
                     id: latestNewId,
-                    lower: 0,
+                    lower: 0.0,
                     lowerIsInclusive: false,
-                    upper: 0,
+                    upper: 0.0,
                     upperIsInclusive: false,
                 };
             default:
@@ -68,11 +67,11 @@ const Root = props => {
             }
         },
 
-        onAdd(featureId, newValue) {
+        onAdd(featureId) {
             const newFeatures = deepcopy(features);
             const featureToChange = newFeatures.find(f => f.id === featureId);
 
-            featureToChange.possibleValues.push(createNewValue(features[featureId].type));
+            featureToChange.possibleValues.push(createNewValue(features.find(f => f.id === featureId).type));
 
             setFeatures(newFeatures);
             setLatestNewId(latestNewId - 1);
@@ -142,31 +141,43 @@ const Root = props => {
         },
     };
 
-    const validatePossibleValue = (type, possibleValue) => {
-        // TODO: validate not only scalar values
-        if (possibleValue.value.length === 0) {
-            return false;
-        }
-        return true;
-    };
+    const realHandlers = {
+        onChange({ target }) {
+            const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
+            const featureId = +matches[1];
+            const valueId = +matches[2];
+            const name = matches[3];
 
-    const validate = () => {
-        for (const feature of features) {
-            for (const possibleValue of feature.possibleValues) {
-                const isValid = validatePossibleValue(feature.type, possibleValue);
-                if (!isValid) {
-                    return [false, feature.id];
-                }
+            let newValue;
+            if (['lower', 'upper'].includes(name)) {
+                newValue = +target.value;
+            } else if (['lowerIsInclusive', 'upperIsInclusive'].includes(name)) {
+                newValue = target.checked;
+            } else {
+                throw new Error('be da s real handler');
             }
-        }
-        return [true, null];
-    };
 
-    const onSubmit = () => {
-        const [isValid, firstInvalidFeatureId] = validate();
-        if (!isValid) {
-            setSelectedFeatureId(firstInvalidFeatureId);
-        }
+            const newFeatures = deepcopy(features);
+
+            const featureToChange = newFeatures.find(f => f.id === featureId);
+            let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
+
+            valueToChange[name] = newValue;
+
+            setFeatures(newFeatures);
+
+            if (valueId > initialNewId) {
+                setUpdatedIds(prevState => prevState.add(valueId));
+            }
+        },
+
+        onDelete(featureId, valueId) {
+            genericHandlers.onDelete(featureId, valueId);
+        },
+
+        onAdd(featureId) {
+            genericHandlers.onAdd(featureId);
+        },
     };
 
     const createValuesEditor = feature => {
@@ -192,9 +203,50 @@ const Root = props => {
                     />
                 );
             case types.REAL.id:
-
+                return (
+                    <RealValues
+                        featureId={feature.id}
+                        values={feature.possibleValues}
+                        onChange={realHandlers.onChange}
+                        onDelete={realHandlers.onDelete}
+                        onAdd={realHandlers.onAdd}
+                    />
+                );
             default:
                 throw new Error('be da s feature type');
+        }
+    };
+
+    const getTypeNameByFeatureId = featureId => {
+        const feature = features.find(f => f.id === featureId);
+        const type = Object.values(types).find(t => t.id === feature.type);
+        return type.name.toLowerCase();
+    };
+
+    const validatePossibleValue = (type, possibleValue) => {
+        if ([types.INT.id, types.REAL.id].includes(type)) {
+            return true;
+        }
+
+        return possibleValue.value.length !== 0;
+    };
+
+    const validate = () => {
+        for (const feature of features) {
+            for (const possibleValue of feature.possibleValues) {
+                const isValid = validatePossibleValue(feature.type, possibleValue);
+                if (!isValid) {
+                    return [false, feature.id];
+                }
+            }
+        }
+        return [true, null];
+    };
+
+    const onSubmit = () => {
+        const [isValid, firstInvalidFeatureId] = validate();
+        if (!isValid) {
+            setSelectedFeatureId(firstInvalidFeatureId);
         }
     };
 
@@ -210,8 +262,7 @@ const Root = props => {
                 ))}
             </select>
 
-            {/* TODO */}
-            {/*<p>Тип: {Object.values(types).find(t => t.id === features[selectedFeatureId].type).name}</p>*/}
+            <p>Тип: {getTypeNameByFeatureId(selectedFeatureId)}</p>
 
             {features.map(f => (
                 <div key={f.id} hidden={f.id !== selectedFeatureId}>
