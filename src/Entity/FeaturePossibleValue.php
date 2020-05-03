@@ -19,7 +19,7 @@ class FeaturePossibleValue
     public ?int $id = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Feature")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Feature", inversedBy="possibleValues")
      * @ORM\JoinColumn(nullable=false)
      */
     public Feature $feature;

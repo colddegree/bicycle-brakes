@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity()
- * @UniqueEntity(fields={"name"})
+ * @ORM\Entity(repositoryClass="App\Repository\FeatureRepository")
  */
 class Feature
 {
@@ -34,10 +34,17 @@ class Feature
      */
     public int $type;
 
+    /**
+     * @var Collection|FeaturePossibleValue[]
+     * @ORM\OneToMany(targetEntity="App\Entity\FeaturePossibleValue", mappedBy="feature")
+     */
+    public Collection $possibleValues;
+
     public function __construct(string $name, int $type)
     {
         $this->name = $name;
         $this->type = $type;
+        $this->possibleValues = new ArrayCollection();
     }
 
     public static function fromArray(array $arr): self
