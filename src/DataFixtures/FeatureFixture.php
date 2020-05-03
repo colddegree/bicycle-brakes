@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Feature;
+use App\Entity\FeatureNormalValue;
 use App\Entity\FeaturePossibleValue;
 use App\Entity\IntValue;
 use App\Entity\RealValue;
@@ -27,6 +28,14 @@ class FeatureFixture extends Fixture
                     'upperIsInclusive' => true,
                 ],
             ],
+            'normalValues' => [
+                [
+                    'lower' => 10,
+                    'lowerIsInclusive' => true,
+                    'upper' => 30,
+                    'upperIsInclusive' => true,
+                ],
+            ],
         ],
         [
             'name' => 'Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
@@ -36,12 +45,18 @@ class FeatureFixture extends Fixture
                 'Прерывистый',
                 'Отсутствие трения',
             ],
+            'normalValues' => [
+                'Отсутствие трения',
+            ],
         ],
         [
             'name' => 'Наличие скрипа при торможении',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
                 'Да',
+                'Нет',
+            ],
+            'normalValues' => [
                 'Нет',
             ],
         ],
@@ -53,6 +68,14 @@ class FeatureFixture extends Fixture
                     'lower' => 0,
                     'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
+                    'upperIsInclusive' => true,
+                ],
+            ],
+            'normalValues' => [
+                [
+                    'lower' => 2,
+                    'lowerIsInclusive' => true,
+                    'upper' => 4.5,
                     'upperIsInclusive' => true,
                 ],
             ],
@@ -68,6 +91,14 @@ class FeatureFixture extends Fixture
                     'upperIsInclusive' => true,
                 ],
             ],
+            'normalValues' => [
+                [
+                    'lower' => 0.75,
+                    'lowerIsInclusive' => true,
+                    'upper' => 5,
+                    'upperIsInclusive' => true,
+                ],
+            ],
         ],
         [
             'name' => 'Толщина фрикциона внутренней колодки',
@@ -80,12 +111,23 @@ class FeatureFixture extends Fixture
                     'upperIsInclusive' => true,
                 ],
             ],
+            'normalValues' => [
+                [
+                    'lower' => 0.75,
+                    'lowerIsInclusive' => true,
+                    'upper' => 5,
+                    'upperIsInclusive' => true,
+                ],
+            ],
         ],
         [
             'name' => 'Меньше ли толщина ротора допустимой для него толщины',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
                 'Да',
+                'Нет',
+            ],
+            'normalValues' => [
                 'Нет',
             ],
         ],
@@ -97,6 +139,14 @@ class FeatureFixture extends Fixture
                     'lower' => 0,
                     'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
+                    'upperIsInclusive' => true,
+                ],
+            ],
+            'normalValues' => [
+                [
+                    'lower' => 0.25,
+                    'lowerIsInclusive' => true,
+                    'upper' => 1,
                     'upperIsInclusive' => true,
                 ],
             ],
@@ -112,6 +162,14 @@ class FeatureFixture extends Fixture
                     'upperIsInclusive' => true,
                 ],
             ],
+            'normalValues' => [
+                [
+                    'lower' => 0.25,
+                    'lowerIsInclusive' => true,
+                    'upper' => 1,
+                    'upperIsInclusive' => true,
+                ],
+            ],
         ],
         [
             'name' => 'Расстояние между фрикционом внешней колодки тормоза и ротором при зажатой ручке тормоза',
@@ -121,6 +179,14 @@ class FeatureFixture extends Fixture
                     'lower' => 0,
                     'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
+                    'upperIsInclusive' => true,
+                ],
+            ],
+            'normalValues' => [
+                [
+                    'lower' => 0,
+                    'lowerIsInclusive' => true,
+                    'upper' => 0,
                     'upperIsInclusive' => true,
                 ],
             ],
@@ -136,6 +202,14 @@ class FeatureFixture extends Fixture
                     'upperIsInclusive' => true,
                 ],
             ],
+            'normalValues' => [
+                [
+                    'lower' => 0,
+                    'lowerIsInclusive' => true,
+                    'upper' => 0,
+                    'upperIsInclusive' => true,
+                ],
+            ],
         ],
         [
             'name' => 'Равноудалённость колодок от ротора',
@@ -144,6 +218,9 @@ class FeatureFixture extends Fixture
                 'Да',
                 'Нет',
             ],
+            'normalValues' => [
+                'Да',
+            ],
         ],
         [
             'name' => 'Характер упора при зажатии ручки тормоза',
@@ -151,6 +228,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 'Чёткий, ярко выраженный',
                 'Плавный',
+            ],
+            'normalValues' => [
+                'Чёткий, ярко выраженный',
             ],
         ],
         // TODO: remove
@@ -167,6 +247,12 @@ class FeatureFixture extends Fixture
                     'upper' => 50,
                 ],
             ],
+            'normalValues' => [
+                [
+                    'lower' => 25,
+                    'upper' => 30,
+                ],
+            ],
         ],
     ];
 
@@ -178,34 +264,52 @@ class FeatureFixture extends Fixture
         foreach (self::DATA as $entry) {
             $feature = new Feature($entry['name'], $entry['type']);
 
-            foreach ($entry['possibleValues'] as $value) {
+            foreach ($entry['possibleValues'] as $valueData) {
                 $possibleValue = new FeaturePossibleValue($feature);
-
-                switch ($entry['type']) {
-                    case Feature::TYPE_SCALAR:
-                        $possibleValue->scalarValue = new ScalarValue($value);
-                        break;
-                    case Feature::TYPE_INT:
-                        $possibleValue->intValue = new IntValue($value['lower'], $value['upper']);
-                        break;
-                    case Feature::TYPE_REAL:
-                        $possibleValue->realValue = new RealValue(
-                            $value['lower'],
-                            $value['lowerIsInclusive'],
-                            $value['upper'],
-                            $value['upperIsInclusive'],
-                        );
-                        break;
-                    default:
-                        throw new RuntimeException(sprintf('Unsupported type "%s"', $entry['type']));
-                }
-
+                $this->populateValue($possibleValue, $valueData, $entry['type']);
                 $manager->persist($possibleValue);
+            }
+
+            foreach ($entry['normalValues'] as $valueData) {
+                $normalValue = new FeatureNormalValue($feature);
+                $this->populateValue($normalValue, $valueData, $entry['type']);
+                $manager->persist($normalValue);
             }
 
             $manager->persist($feature);
         }
 
         $manager->flush();
+    }
+
+    /**
+     * @param FeaturePossibleValue|FeatureNormalValue $value
+     * @param array|string $valueData
+     * @param int $type
+     *
+     * @return FeaturePossibleValue|FeatureNormalValue
+     */
+    private function populateValue($value, $valueData, int $type)
+    {
+        switch ($type) {
+            case Feature::TYPE_SCALAR:
+                $value->scalarValue = new ScalarValue($valueData);
+                break;
+            case Feature::TYPE_INT:
+                $value->intValue = new IntValue($valueData['lower'], $valueData['upper']);
+                break;
+            case Feature::TYPE_REAL:
+                $value->realValue = new RealValue(
+                    $valueData['lower'],
+                    $valueData['lowerIsInclusive'],
+                    $valueData['upper'],
+                    $valueData['upperIsInclusive'],
+                );
+                break;
+            default:
+                throw new RuntimeException(sprintf('Unsupported type "%s"', $type));
+        }
+
+        return $value;
     }
 }
