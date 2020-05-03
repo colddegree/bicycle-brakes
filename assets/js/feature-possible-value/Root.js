@@ -51,6 +51,21 @@ const Root = props => {
     };
 
     const genericHandlers = {
+        onChange(featureId, valueId, fieldName, newValue) {
+            const newFeatures = deepcopy(features);
+
+            const featureToChange = newFeatures.find(f => f.id === featureId);
+            let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
+
+            valueToChange[fieldName] = newValue;
+
+            setFeatures(newFeatures);
+
+            if (valueId > initialNewId) {
+                setUpdatedIds(prevState => prevState.add(valueId));
+            }
+        },
+
         onDelete(featureId, valueId) {
             const newFeatures = deepcopy(features);
             let featureToChange = newFeatures.find(f => f.id === featureId);
@@ -86,18 +101,7 @@ const Root = props => {
 
             const newValue = target.value;
 
-            const newFeatures = deepcopy(features);
-
-            const featureToChange = newFeatures.find(f => f.id === featureId);
-            let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
-
-            valueToChange.value = newValue;
-
-            setFeatures(newFeatures);
-
-            if (valueId > initialNewId) {
-                setUpdatedIds(prevState => prevState.add(valueId));
-            }
+            genericHandlers.onChange(featureId, valueId, 'value', newValue);
         },
 
         onDelete(featureId, valueId) {
@@ -114,22 +118,11 @@ const Root = props => {
             const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
             const featureId = +matches[1];
             const valueId = +matches[2];
-            const name = matches[3];
+            const fieldName = matches[3];
 
             const newValue = +target.value;
 
-            const newFeatures = deepcopy(features);
-
-            const featureToChange = newFeatures.find(f => f.id === featureId);
-            let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
-
-            valueToChange[name] = newValue;
-
-            setFeatures(newFeatures);
-
-            if (valueId > initialNewId) {
-                setUpdatedIds(prevState => prevState.add(valueId));
-            }
+            genericHandlers.onChange(featureId, valueId, fieldName, newValue);
         },
 
         onDelete(featureId, valueId) {
@@ -146,29 +139,18 @@ const Root = props => {
             const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
             const featureId = +matches[1];
             const valueId = +matches[2];
-            const name = matches[3];
+            const fieldName = matches[3];
 
             let newValue;
-            if (['lower', 'upper'].includes(name)) {
+            if (['lower', 'upper'].includes(fieldName)) {
                 newValue = +target.value;
-            } else if (['lowerIsInclusive', 'upperIsInclusive'].includes(name)) {
+            } else if (['lowerIsInclusive', 'upperIsInclusive'].includes(fieldName)) {
                 newValue = target.checked;
             } else {
                 throw new Error('be da s real handler');
             }
 
-            const newFeatures = deepcopy(features);
-
-            const featureToChange = newFeatures.find(f => f.id === featureId);
-            let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
-
-            valueToChange[name] = newValue;
-
-            setFeatures(newFeatures);
-
-            if (valueId > initialNewId) {
-                setUpdatedIds(prevState => prevState.add(valueId));
-            }
+            genericHandlers.onChange(featureId, valueId, fieldName, newValue);
         },
 
         onDelete(featureId, valueId) {
