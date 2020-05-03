@@ -71,6 +71,44 @@ class IntervalMergerTest extends TestCase
                 new IntValue(5, 7),
             ],
         ];
+
+        yield '2 одинаковые точки' => [
+            [
+                new IntValue(1, 1),
+                new IntValue(1, 1),
+            ],
+            [new IntValue(1, 1)],
+        ];
+
+        yield '2 разные точки' => [
+            [
+                new IntValue(1, 1),
+                new IntValue(2, 2),
+            ],
+            [
+                new IntValue(1, 1),
+                new IntValue(2, 2),
+            ],
+        ];
+
+        yield 'точка внутри интервала' => [
+            [
+                new IntValue(1, 3),
+                new IntValue(2, 2),
+            ],
+            [new IntValue(1, 3)],
+        ];
+
+        yield 'интервал и точка снаружи' => [
+            [
+                new IntValue(1, 3),
+                new IntValue(4, 4),
+            ],
+            [
+                new IntValue(1, 3),
+                new IntValue(4, 4),
+            ],
+        ];
     }
 
     /**
@@ -126,7 +164,7 @@ class IntervalMergerTest extends TestCase
             [new RealValue(1, true, 5, true)],
         ];
 
-        yield 'первый невключительный пересекается "справа" со вторым включительным интервалом' => [
+        yield 'первый невключительный интервал пересекается "справа" со вторым включительным интервалом' => [
             [
                 new RealValue(4, false, 6, false),
                 new RealValue(1, true,5, true),
@@ -148,6 +186,33 @@ class IntervalMergerTest extends TestCase
                 new RealValue(1, true,3, false),
             ],
             [new RealValue(1, true, 5, false)],
+        ];
+
+        yield 'интервал и вырожденная точка (хотя бы одна сторона невключительна) снаружи' => [
+            [
+                new RealValue(1, true, 3, false),
+                new RealValue(4, false,4, true),
+            ],
+            [new RealValue(1, true, 3, false)],
+        ];
+
+        yield 'интервал и невырожденная точка снаружи' => [
+            [
+                new RealValue(1, true, 3, false),
+                new RealValue(4, true,4, true),
+            ],
+            [
+                new RealValue(1, true, 3, false),
+                new RealValue(4, true,4, true),
+            ],
+        ];
+
+        yield 'интервал и невырожденная точка внутри него' => [
+            [
+                new RealValue(1, true, 3, false),
+                new RealValue(2, true,2, true),
+            ],
+            [new RealValue(1, true, 3, false)],
         ];
     }
 }

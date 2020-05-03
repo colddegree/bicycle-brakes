@@ -56,21 +56,27 @@ class IntervalMerger
         $stack = new SplStack();
         $stack->push($intervals[0]);
 
-        for ($i = 1, $iMax = count($intervals); $i < $iMax; ++$i) {
+        foreach (array_slice($intervals, 1, count($intervals)) as $int) {
+            // пропускаем вырожденные точки
+            if ($int->lower === $int->upper && (!$int->lowerIsInclusive || !$int->upperIsInclusive)) {
+                continue;
+            }
+
             /** @var RealValue $topInterval */
             $topInterval = $stack->top();
-            if ($topInterval->upper > $intervals[$i]->lower) {
+
+            if ($topInterval->upper > $int->lower) {
                 $stack->pop();
                 $stack->push(new RealValue(
                     $topInterval->lower,
                     $topInterval->lowerIsInclusive,
-                    max($intervals[$i]->upper, $topInterval->upper),
-                    $intervals[$i]->upper > $topInterval->upper
-                        ? $intervals[$i]->upperIsInclusive
+                    max($int->upper, $topInterval->upper),
+                    $int->upper > $topInterval->upper
+                        ? $int->upperIsInclusive
                         : $topInterval->upperIsInclusive,
                 ));
             } else {
-                $stack->push($intervals[$i]);
+                $stack->push($int);
             }
         }
 
