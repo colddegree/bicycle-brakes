@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import ScalarValues from "./ScalarValues";
 import deepcopy from 'deepcopy';
@@ -51,13 +51,18 @@ const Root = props => {
     };
 
     const genericHandlers = {
-        onChange(featureId, valueId, fieldName, newValue) {
+        onChange(event, newValueProvider) {
+            const matches = event.target.name.match(/^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
+            const featureId = +matches[1];
+            const valueId = +matches[2];
+            const fieldName = matches[3];
+
             const newFeatures = deepcopy(features);
 
             const featureToChange = newFeatures.find(f => f.id === featureId);
             let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
 
-            valueToChange[fieldName] = newValue;
+            valueToChange[fieldName] = newValueProvider(event, fieldName);
 
             setFeatures(newFeatures);
 
@@ -94,14 +99,8 @@ const Root = props => {
     };
 
     const scalarHandlers = {
-        onChange({ target }) {
-            const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]$/);
-            const featureId = +matches[1];
-            const valueId = +matches[2];
-
-            const newValue = target.value;
-
-            genericHandlers.onChange(featureId, valueId, 'value', newValue);
+        onChange(event) {
+            genericHandlers.onChange(event, event => event.target.value);
         },
 
         onDelete(featureId, valueId) {
@@ -114,15 +113,8 @@ const Root = props => {
     };
 
     const intHandlers = {
-        onChange({ target }) {
-            const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
-            const featureId = +matches[1];
-            const valueId = +matches[2];
-            const fieldName = matches[3];
-
-            const newValue = +target.value;
-
-            genericHandlers.onChange(featureId, valueId, fieldName, newValue);
+        onChange(event) {
+            genericHandlers.onChange(event, event => +event.target.value);
         },
 
         onDelete(featureId, valueId) {
@@ -135,22 +127,18 @@ const Root = props => {
     };
 
     const realHandlers = {
-        onChange({ target }) {
-            const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
-            const featureId = +matches[1];
-            const valueId = +matches[2];
-            const fieldName = matches[3];
-
-            let newValue;
-            if (['lower', 'upper'].includes(fieldName)) {
-                newValue = +target.value;
-            } else if (['lowerIsInclusive', 'upperIsInclusive'].includes(fieldName)) {
-                newValue = target.checked;
-            } else {
-                throw new Error('be da s real handler');
-            }
-
-            genericHandlers.onChange(featureId, valueId, fieldName, newValue);
+        onChange(event) {
+            genericHandlers.onChange(event, (event, fieldName) => {
+                let newValue;
+                if (['lower', 'upper'].includes(fieldName)) {
+                    newValue = +event.target.value;
+                } else if (['lowerIsInclusive', 'upperIsInclusive'].includes(fieldName)) {
+                    newValue = event.target.checked;
+                } else {
+                    throw new Error('be da s real handler');
+                }
+                return newValue;
+            });
         },
 
         onDelete(featureId, valueId) {

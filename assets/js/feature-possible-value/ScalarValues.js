@@ -6,7 +6,7 @@ const ScalarValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
         {values.map(v => (
             <React.Fragment key={`${featureId}-${v.id}`}>
                 <input
-                    name={`values[${featureId}][${v.id}]`}
+                    name={`values[${featureId}][${v.id}][value]`}
                     value={v.value}
                     onChange={onChange}
                     maxLength={255}
