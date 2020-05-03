@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ScalarValues from "./ScalarValues";
 import deepcopy from 'deepcopy';
 import * as types from '../feature/types'
+import IntValues from "./IntValues";
 
 const Root = props => {
     const [features, setFeatures] = useState(props.features);
@@ -114,7 +115,12 @@ const Root = props => {
                     />
                 );
             case types.INT.id:
-
+                return (
+                    <IntValues
+                        featureId={feature.id}
+                        values={feature.possibleValues}
+                    />
+                );
             case types.REAL.id:
 
             default:
