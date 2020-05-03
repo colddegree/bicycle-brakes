@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ScalarValues from "./ScalarValues";
 import deepcopy from 'deepcopy';
@@ -10,44 +10,12 @@ const Root = props => {
     const [features, setFeatures] = useState(props.features);
     const [selectedFeatureId, setSelectedFeatureId] = useState(features.length > 0 ? features[0].id : 0);
 
-    const initialNewId = -1;
-    const [latestNewId, setLatestNewId] = useState(initialNewId);
-
-    const [updatedIds, setUpdatedIds] = useState(new Set());
-    const [deletedIds, setDeletedIds] = useState(new Set());
-
     if (features.length === 0) {
         return 'Нет признаков';
     }
 
     const onSelect = ({ target }) => {
         setSelectedFeatureId(+target.value);
-    };
-
-    const createNewValue = type => {
-        switch (type) {
-            case types.SCALAR.id:
-                return {
-                    id: latestNewId,
-                    value: '',
-                };
-            case types.INT.id:
-                return {
-                    id: latestNewId,
-                    lower: 0,
-                    upper: 0,
-                };
-            case types.REAL.id:
-                return {
-                    id: latestNewId,
-                    lower: 0.0,
-                    lowerIsInclusive: false,
-                    upper: 0.0,
-                    upperIsInclusive: false,
-                };
-            default:
-                throw new Error('be da s type');
-        }
     };
 
     const genericHandlers = {
@@ -65,10 +33,6 @@ const Root = props => {
             valueToChange[fieldName] = newValueProvider(event, fieldName);
 
             setFeatures(newFeatures);
-
-            if (valueId > initialNewId) {
-                setUpdatedIds(prevState => prevState.add(valueId));
-            }
         },
 
         onDelete(featureId, valueId) {
@@ -77,24 +41,15 @@ const Root = props => {
             featureToChange.possibleValues = featureToChange.possibleValues.filter(v => v.id !== valueId);
 
             setFeatures(newFeatures);
-
-            if (valueId > initialNewId) {
-                setDeletedIds(prevState => prevState.add(valueId));
-                setUpdatedIds(prevState => {
-                    prevState.delete(valueId);
-                    return prevState;
-                });
-            }
         },
 
-        onAdd(featureId) {
+        onAdd(featureId, newValue) {
             const newFeatures = deepcopy(features);
             const featureToChange = newFeatures.find(f => f.id === featureId);
 
-            featureToChange.possibleValues.push(createNewValue(features.find(f => f.id === featureId).type));
+            featureToChange.possibleValues.push(newValue);
 
             setFeatures(newFeatures);
-            setLatestNewId(latestNewId - 1);
         },
     };
 
@@ -107,8 +62,8 @@ const Root = props => {
             genericHandlers.onDelete(featureId, valueId);
         },
 
-        onAdd(featureId) {
-            genericHandlers.onAdd(featureId);
+        onAdd(featureId, newValue) {
+            genericHandlers.onAdd(featureId, newValue);
         },
     };
 
@@ -121,8 +76,8 @@ const Root = props => {
             genericHandlers.onDelete(featureId, valueId);
         },
 
-        onAdd(featureId) {
-            genericHandlers.onAdd(featureId);
+        onAdd(featureId, newValue) {
+            genericHandlers.onAdd(featureId, newValue);
         },
     };
 
@@ -145,8 +100,8 @@ const Root = props => {
             genericHandlers.onDelete(featureId, valueId);
         },
 
-        onAdd(featureId) {
-            genericHandlers.onAdd(featureId);
+        onAdd(featureId, newValue) {
+            genericHandlers.onAdd(featureId, newValue);
         },
     };
 
@@ -240,9 +195,6 @@ const Root = props => {
                     <br />
                 </div>
             ))}
-
-            <input type="hidden" name="updatedIds" value={Array.from(updatedIds).join(',')} />
-            <input type="hidden" name="deletedIds" value={Array.from(deletedIds).join(',')} />
 
             <button onClick={onSubmit}>Сохранить</button>
         </form>
