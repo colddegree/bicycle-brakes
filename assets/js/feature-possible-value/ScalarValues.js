@@ -9,6 +9,8 @@ const ScalarValues = ({ featureId, values, onChange, onAdd, onDelete }) => {
                     name={`values[${featureId}][${v.id}]`}
                     value={v.value}
                     onChange={onChange}
+                    maxLength={255}
+                    size={50}
                     required={true}
                 />{' '}
                 <button onClick={() => onDelete(featureId, v.id)}>Удалить</button>

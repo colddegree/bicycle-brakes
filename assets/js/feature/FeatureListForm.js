@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Feature from './Feature';
-import { TYPE_SCALAR } from './types';
+import { SCALAR } from './types';
 
 const FeatureListForm = (props) => {
     const initialNewId = -1;
@@ -49,7 +49,7 @@ const FeatureListForm = (props) => {
             {
                 id: latestNewId,
                 name: '',
-                type: TYPE_SCALAR.id,
+                type: SCALAR.id,
             },
         ]);
         setLatestNewId(latestNewId - 1);

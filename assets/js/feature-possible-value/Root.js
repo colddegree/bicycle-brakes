@@ -12,6 +12,7 @@ const Root = props => {
     const [latestNewId, setLatestNewId] = useState(initialNewId);
 
     const [updatedIds, setUpdatedIds] = useState(new Set());
+    const [deletedIds, setDeletedIds] = useState(new Set());
 
     useEffect(() => {
         if (features.length > 0) {
@@ -55,7 +56,6 @@ const Root = props => {
         setLatestNewId(latestNewId - 1);
     };
 
-    const [deletedIds, setDeletedIds] = useState(new Set());
     const onScalarValueDelete = (featureId, valueId) => {
         const newFeatures = deepcopy(features);
         let featureToChange = newFeatures.find(f => f.id === featureId);
@@ -99,6 +99,27 @@ const Root = props => {
         }
     };
 
+    const createValuesEditor = feature => {
+        switch (feature.type) {
+            case types.SCALAR.id:
+                return (
+                    <ScalarValues
+                        featureId={feature.id}
+                        values={feature.possibleValues}
+                        onChange={onScalarValueChange}
+                        onAdd={onScalarValueAdd}
+                        onDelete={onScalarValueDelete}
+                    />
+                );
+            case types.INT.id:
+
+            case types.REAL.id:
+
+            default:
+                throw new Error('be da s feature type');
+        }
+    };
+
     return (
         <form method="post">
             <select value={selectedFeatureId} onChange={onSelect}>
@@ -116,13 +137,7 @@ const Root = props => {
 
             {features.map(f => (
                 <div key={f.id} hidden={f.id !== selectedFeatureId}>
-                    <ScalarValues
-                        featureId={f.id}
-                        values={f.possibleValues}
-                        onChange={onScalarValueChange}
-                        onAdd={onScalarValueAdd}
-                        onDelete={onScalarValueDelete}
-                    />
+                    {createValuesEditor(f)}
                     <br />
                 </div>
             ))}
