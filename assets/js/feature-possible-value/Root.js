@@ -25,6 +25,60 @@ const Root = props => {
         setSelectedFeatureId(+target.value);
     };
 
+    const createNewValue = type => {
+        switch (type) {
+            case types.SCALAR.id:
+                return {
+                    id: latestNewId,
+                    value: '',
+                };
+            case types.INT.id:
+                return {
+                    id: latestNewId,
+                    lower: 0,
+                    upper: 0,
+                };
+            case types.REAL.id:
+                return {
+                    id: latestNewId,
+                    lower: 0,
+                    lowerIsInclusive: false,
+                    upper: 0,
+                    upperIsInclusive: false,
+                };
+            default:
+                throw new Error('be da s type');
+        }
+    };
+
+    const genericHandlers = {
+        onDelete(featureId, valueId) {
+            const newFeatures = deepcopy(features);
+            let featureToChange = newFeatures.find(f => f.id === featureId);
+            featureToChange.possibleValues = featureToChange.possibleValues.filter(v => v.id !== valueId);
+
+            setFeatures(newFeatures);
+
+            if (valueId > initialNewId) {
+                setDeletedIds(prevState => prevState.add(valueId));
+                setUpdatedIds(prevState => {
+                    prevState.delete(valueId);
+                    return prevState;
+                });
+            }
+        },
+
+        onAdd(featureId, newValue) {
+            const newFeatures = deepcopy(features);
+            const featureToChange = newFeatures.find(f => f.id === featureId);
+
+            featureToChange.possibleValues.push(createNewValue(features[featureId].type));
+
+            setFeatures(newFeatures);
+            setLatestNewId(latestNewId - 1);
+        },
+    };
+
     const scalarHandlers = {
         onChange({ target }) {
             const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]$/);
@@ -48,30 +102,43 @@ const Root = props => {
         },
 
         onDelete(featureId, valueId) {
+            genericHandlers.onDelete(featureId, valueId);
+        },
+
+        onAdd(featureId) {
+            genericHandlers.onAdd(featureId);
+        },
+    };
+
+    const intHandlers = {
+        onChange({ target }) {
+            const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
+            const featureId = +matches[1];
+            const valueId = +matches[2];
+            const name = matches[3];
+
+            const newValue = +target.value;
+
             const newFeatures = deepcopy(features);
-            let featureToChange = newFeatures.find(f => f.id === featureId);
-            featureToChange.possibleValues = featureToChange.possibleValues.filter(v => v.id !== valueId);
+
+            const featureToChange = newFeatures.find(f => f.id === featureId);
+            let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
+
+            valueToChange[name] = newValue;
 
             setFeatures(newFeatures);
 
             if (valueId > initialNewId) {
-                setDeletedIds(prevState => prevState.add(valueId));
-                setUpdatedIds(prevState => {
-                    prevState.delete(valueId);
-                    return prevState;
-                });
+                setUpdatedIds(prevState => prevState.add(valueId));
             }
         },
 
+        onDelete(featureId, valueId) {
+            genericHandlers.onDelete(featureId, valueId);
+        },
+
         onAdd(featureId) {
-            const newFeatures = deepcopy(features);
-            const featureToChange = newFeatures.find(f => f.id === featureId);
-            featureToChange.possibleValues.push({
-                id: latestNewId,
-                value: '',
-            });
-            setFeatures(newFeatures);
-            setLatestNewId(latestNewId - 1);
+            genericHandlers.onAdd(featureId);
         },
     };
 
@@ -119,6 +186,9 @@ const Root = props => {
                     <IntValues
                         featureId={feature.id}
                         values={feature.possibleValues}
+                        onChange={intHandlers.onChange}
+                        onDelete={intHandlers.onDelete}
+                        onAdd={intHandlers.onAdd}
                     />
                 );
             case types.REAL.id:

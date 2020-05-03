@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { INT_MAX, INT_MIN } from "./constraints";
 
-const IntValues = ({ featureId, values }) => {
+const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
     return <>
         {values.map(v => (
             <React.Fragment key={`${featureId}-${v.id}`}>
@@ -11,7 +11,7 @@ const IntValues = ({ featureId, values }) => {
                     type="number"
                     name={`values[${featureId}][${v.id}][lower]`}
                     value={v.lower}
-                    // onChange={onChange}
+                    onChange={onChange}
                     min={INT_MIN}
                     max={INT_MAX}
                     required={true}
@@ -23,15 +23,18 @@ const IntValues = ({ featureId, values }) => {
                     type="number"
                     name={`values[${featureId}][${v.id}][upper]`}
                     value={v.upper}
-                    // onChange={onChange}
+                    onChange={onChange}
                     min={INT_MIN}
                     max={INT_MAX}
                     required={true}
                 />
                 <br />
+                <button onClick={() => onDelete(featureId, v.id)}>Удалить</button>
+                <br />
                 <br />
             </React.Fragment>
         ))}
+        <button onClick={event => { event.preventDefault(); onAdd(featureId); }}>Добавить целочисленное значение</button>
     </>
 };
 
@@ -42,10 +45,9 @@ IntValues.propTypes = {
         lower: PropTypes.number.isRequired,
         upper: PropTypes.number.isRequired,
     })).isRequired,
-    // TODO
-    // onChange: PropTypes.func.isRequired,
-    // onDelete: PropTypes.func.isRequired,
-    // onAdd: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onAdd: PropTypes.func.isRequired,
 };
 
 export default IntValues;
