@@ -10,11 +10,10 @@ use App\Entity\IntValue;
 use App\Entity\RealValue;
 use App\Entity\ScalarValue;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use RuntimeException;
 
-class FeatureFixture extends Fixture implements DependentFixtureInterface
+class FeatureFixture extends Fixture
 {
     private const DATA = [
         [
@@ -33,17 +32,17 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'name' => 'Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'scalar_Постоянный',
-                'scalar_Прерывистый',
-                'scalar_Отсутствие трения',
+                'Постоянный',
+                'Прерывистый',
+                'Отсутствие трения',
             ],
         ],
         [
             'name' => 'Наличие скрипа при торможении',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'scalar_Да',
-                'scalar_Нет',
+                'Да',
+                'Нет',
             ],
         ],
         [
@@ -86,8 +85,8 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'name' => 'Меньше ли толщина ротора допустимой для него толщины',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'scalar_Да',
-                'scalar_Нет',
+                'Да',
+                'Нет',
             ],
         ],
         [
@@ -142,16 +141,16 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'name' => 'Равноудалённость колодок от ротора',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'scalar_Да',
-                'scalar_Нет',
+                'Да',
+                'Нет',
             ],
         ],
         [
             'name' => 'Характер упора при зажатии ручки тормоза',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'scalar_Чёткий, ярко выраженный',
-                'scalar_Плавный',
+                'Чёткий, ярко выраженный',
+                'Плавный',
             ],
         ],
         // TODO: remove
@@ -184,9 +183,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
 
                 switch ($entry['type']) {
                     case Feature::TYPE_SCALAR:
-                        /** @var ScalarValue $value */
-                        $value = $this->getReference($value);
-                        $possibleValue->scalarValue = $value;
+                        $possibleValue->scalarValue = new ScalarValue($value);
                         break;
                     case Feature::TYPE_INT:
                         $possibleValue->intValue = new IntValue($value['lower'], $value['upper']);
@@ -210,15 +207,5 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
         }
 
         $manager->flush();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDependencies()
-    {
-        return [
-            ScalarValueFixture::class,
-        ];
     }
 }
