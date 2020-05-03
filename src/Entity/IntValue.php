@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use DomainException;
 
 /**
  * @ORM\Entity()
@@ -34,10 +33,12 @@ class IntValue
 
     public function __construct(int $lower, int $upper)
     {
-//        if ($lower > $upper) {
-//            throw new DomainException('$lower should be less or equal to $upper');
-//        }
-        $this->lower = $lower;
-        $this->upper = $upper;
+        if ($lower > $upper) {
+            $this->lower = $upper;
+            $this->upper = $lower;
+        } else {
+            $this->lower = $lower;
+            $this->upper = $upper;
+        }
     }
 }

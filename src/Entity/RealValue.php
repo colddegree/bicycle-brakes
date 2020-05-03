@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use DomainException;
 
 /**
  * @ORM\Entity()
@@ -44,12 +43,14 @@ class RealValue
 
     public function __construct(float $lower, bool $lowerIsInclusive, float $upper, bool $upperIsInclusive)
     {
-//        if ($lower > $upper) {
-//            throw new DomainException('$lower should be less or equal to $upper');
-//        }
-        $this->lower = $lower;
+        if ($lower > $upper) {
+            $this->lower = $upper;
+            $this->upper = $lower;
+        } else {
+            $this->lower = $lower;
+            $this->upper = $upper;
+        }
         $this->lowerIsInclusive = $lowerIsInclusive;
-        $this->upper = $upper;
         $this->upperIsInclusive = $upperIsInclusive;
     }
 }
