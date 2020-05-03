@@ -22,9 +22,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lower_is_inclusive' => false,
+                    'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
-                    'upper_is_inclusive' => true,
+                    'upperIsInclusive' => true,
                 ],
             ],
         ],
@@ -51,9 +51,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lower_is_inclusive' => false,
+                    'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
-                    'upper_is_inclusive' => true,
+                    'upperIsInclusive' => true,
                 ],
             ],
         ],
@@ -63,9 +63,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lower_is_inclusive' => false,
+                    'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
-                    'upper_is_inclusive' => true,
+                    'upperIsInclusive' => true,
                 ],
             ],
         ],
@@ -75,9 +75,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lower_is_inclusive' => false,
+                    'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
-                    'upper_is_inclusive' => true,
+                    'upperIsInclusive' => true,
                 ],
             ],
         ],
@@ -95,9 +95,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lower_is_inclusive' => false,
+                    'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
-                    'upper_is_inclusive' => true,
+                    'upperIsInclusive' => true,
                 ],
             ],
         ],
@@ -107,9 +107,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lower_is_inclusive' => false,
+                    'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
-                    'upper_is_inclusive' => true,
+                    'upperIsInclusive' => true,
                 ],
             ],
         ],
@@ -119,9 +119,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lower_is_inclusive' => false,
+                    'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
-                    'upper_is_inclusive' => true,
+                    'upperIsInclusive' => true,
                 ],
             ],
         ],
@@ -131,9 +131,9 @@ class FeatureFixture extends Fixture
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lower_is_inclusive' => false,
+                    'lowerIsInclusive' => false,
                     'upper' => RealValue::MAX,
-                    'upper_is_inclusive' => true,
+                    'upperIsInclusive' => true,
                 ],
             ],
         ],
@@ -191,9 +191,9 @@ class FeatureFixture extends Fixture
                     case Feature::TYPE_REAL:
                         $possibleValue->realValue = new RealValue(
                             $value['lower'],
-                            $value['lower_is_inclusive'],
+                            $value['lowerIsInclusive'],
                             $value['upper'],
-                            $value['upper_is_inclusive'],
+                            $value['upperIsInclusive'],
                         );
                         break;
                     default:
