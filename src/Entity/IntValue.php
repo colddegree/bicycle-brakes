@@ -34,9 +34,9 @@ class IntValue
 
     public function __construct(int $lower, int $upper)
     {
-        if ($lower > $upper) {
-            throw new DomainException('$lower should be less or equal to $upper');
-        }
+//        if ($lower > $upper) {
+//            throw new DomainException('$lower should be less or equal to $upper');
+//        }
         $this->lower = $lower;
         $this->upper = $upper;
     }

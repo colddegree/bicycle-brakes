@@ -46,35 +46,41 @@ class FeaturePossibleValueController extends AbstractController
             dump($request->request->all());
         }
 
+        return $this->render('feature_possible_value/index.html.twig', [
+            'data' => json_encode($this->getData(),  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+        ]);
+    }
+
+    private function getData(): array
+    {
+        // TODO: доставать данные оптимальнее
+
         /** @var Feature[] $features */
         $features = $this->featureRepository->findAll();
 
-        $data = [];
-        // TODO: uncomment
-//        foreach ($features as $feature) {
-//            $item = $feature->toArray();
-//            $possibleValues = [];
-//            foreach ($feature->possibleValues as $possibleValue) {
-//                switch ($feature->type) {
-//                    case Feature::TYPE_SCALAR:
-//                        $possibleValues[] = $this->scalarValueToArrayMapper->map($possibleValue->scalarValue);
-//                        break;
-//                    case Feature::TYPE_INT:
-//                        $possibleValues[] = $this->intValueToArrayMapper->map($possibleValue->intValue);
-//                        break;
-//                    case Feature::TYPE_REAL:
-//                        $possibleValues[] = $this->realValueToArrayMapper->map($possibleValue->realValue);
-//                        break;
-//                    default:
-//                        throw new RuntimeException(sprintf('Unsupported type "%s"', $feature->type));
-//                }
-//            }
-//            $item['possibleValues'] = $possibleValues;
-//            $data[] = $item;
-//        }
+        $result = [];
+        foreach ($features as $feature) {
+            $item = $feature->toArray();
+            $possibleValues = [];
+            foreach ($feature->possibleValues as $possibleValue) {
+                switch ($feature->type) {
+                    case Feature::TYPE_SCALAR:
+                        $possibleValues[] = $this->scalarValueToArrayMapper->map($possibleValue->scalarValue);
+                        break;
+                    case Feature::TYPE_INT:
+                        $possibleValues[] = $this->intValueToArrayMapper->map($possibleValue->intValue);
+                        break;
+                    case Feature::TYPE_REAL:
+                        $possibleValues[] = $this->realValueToArrayMapper->map($possibleValue->realValue);
+                        break;
+                    default:
+                        throw new RuntimeException(sprintf('Unsupported type "%s"', $feature->type));
+                }
+            }
+            $item['possibleValues'] = $possibleValues;
+            $result[] = $item;
+        }
 
-        return $this->render('feature_possible_value/index.html.twig', [
-            'data' => json_encode($data,  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
-        ]);
+        return $result;
     }
 }

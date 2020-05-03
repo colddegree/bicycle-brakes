@@ -44,9 +44,9 @@ class RealValue
 
     public function __construct(float $lower, bool $lowerIsInclusive, float $upper, bool $upperIsInclusive)
     {
-        if ($lower > $upper) {
-            throw new DomainException('$lower should be less or equal to $upper');
-        }
+//        if ($lower > $upper) {
+//            throw new DomainException('$lower should be less or equal to $upper');
+//        }
         $this->lower = $lower;
         $this->lowerIsInclusive = $lowerIsInclusive;
         $this->upper = $upper;
