@@ -24,52 +24,54 @@ const Root = props => {
         setSelectedFeatureId(+target.value);
     };
 
-    const onScalarValueChange = ({ target }) => {
-        const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]$/);
-        const featureId = +matches[1];
-        const valueId = +matches[2];
+    const scalarHandlers = {
+        onChange({ target }) {
+            const matches = target.name.match(/^values\[(-?\d+)]\[(-?\d+)]$/);
+            const featureId = +matches[1];
+            const valueId = +matches[2];
 
-        const newValue = target.value;
+            const newValue = target.value;
 
-        const newFeatures = deepcopy(features);
+            const newFeatures = deepcopy(features);
 
-        const featureToChange = newFeatures.find(f => f.id === featureId);
-        let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
+            const featureToChange = newFeatures.find(f => f.id === featureId);
+            let valueToChange = featureToChange.possibleValues.find(v => v.id === valueId);
 
-        valueToChange.value = newValue;
+            valueToChange.value = newValue;
 
-        setFeatures(newFeatures);
+            setFeatures(newFeatures);
 
-        if (valueId > initialNewId) {
-            setUpdatedIds(prevState => prevState.add(valueId));
-        }
-    };
+            if (valueId > initialNewId) {
+                setUpdatedIds(prevState => prevState.add(valueId));
+            }
+        },
 
-    const onScalarValueAdd = featureId => {
-        const newFeatures = deepcopy(features);
-        const featureToChange = newFeatures.find(f => f.id === featureId);
-        featureToChange.possibleValues.push({
-            id: latestNewId,
-            value: '',
-        });
-        setFeatures(newFeatures);
-        setLatestNewId(latestNewId - 1);
-    };
+        onDelete(featureId, valueId) {
+            const newFeatures = deepcopy(features);
+            let featureToChange = newFeatures.find(f => f.id === featureId);
+            featureToChange.possibleValues = featureToChange.possibleValues.filter(v => v.id !== valueId);
 
-    const onScalarValueDelete = (featureId, valueId) => {
-        const newFeatures = deepcopy(features);
-        let featureToChange = newFeatures.find(f => f.id === featureId);
-        featureToChange.possibleValues = featureToChange.possibleValues.filter(v => v.id !== valueId);
+            setFeatures(newFeatures);
 
-        setFeatures(newFeatures);
+            if (valueId > initialNewId) {
+                setDeletedIds(prevState => prevState.add(valueId));
+                setUpdatedIds(prevState => {
+                    prevState.delete(valueId);
+                    return prevState;
+                });
+            }
+        },
 
-        if (valueId > initialNewId) {
-            setDeletedIds(prevState => prevState.add(valueId));
-            setUpdatedIds(prevState => {
-                prevState.delete(valueId);
-                return prevState;
+        onAdd(featureId) {
+            const newFeatures = deepcopy(features);
+            const featureToChange = newFeatures.find(f => f.id === featureId);
+            featureToChange.possibleValues.push({
+                id: latestNewId,
+                value: '',
             });
-        }
+            setFeatures(newFeatures);
+            setLatestNewId(latestNewId - 1);
+        },
     };
 
     const validatePossibleValue = (type, possibleValue) => {
@@ -106,9 +108,9 @@ const Root = props => {
                     <ScalarValues
                         featureId={feature.id}
                         values={feature.possibleValues}
-                        onChange={onScalarValueChange}
-                        onAdd={onScalarValueAdd}
-                        onDelete={onScalarValueDelete}
+                        onChange={scalarHandlers.onChange}
+                        onDelete={scalarHandlers.onDelete}
+                        onAdd={scalarHandlers.onAdd}
                     />
                 );
             case types.INT.id:

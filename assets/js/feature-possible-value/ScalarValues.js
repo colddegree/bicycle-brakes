@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ScalarValues = ({ featureId, values, onChange, onAdd, onDelete }) => {
+const ScalarValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
     return <>
         {values.map(v => (
             <React.Fragment key={`${featureId}-${v.id}`}>
@@ -29,8 +29,8 @@ ScalarValues.propTypes = {
         value: PropTypes.string.isRequired,
     })).isRequired,
     onChange: PropTypes.func.isRequired,
-    onAdd: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
+    onAdd: PropTypes.func.isRequired,
 };
 
 export default ScalarValues;
