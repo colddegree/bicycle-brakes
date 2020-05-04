@@ -33,11 +33,56 @@ class ClinicalPictureController extends AbstractController
     {
         if ($request->isMethod(Request::METHOD_POST)) {
             dump($request->request->all());//TODO
+            $this->handlePost($request);
         }
 
         return $this->render('clinical_picture/index.html.twig', [
             'data' => json_encode($this->getData(),  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
         ]);
+    }
+
+    private function handlePost(Request $request): void
+    {
+        // TODO: добавить валидацию
+
+        $malfunctions = $request->request->get('malfunctions', []);
+        $malfunctions = array_filter($malfunctions, static fn (array $data) => !empty($data['updatedIds']));
+
+        $updatedMalfunctionIds = array_map(static fn (array $data) => (int)$data['id'], $malfunctions);
+
+        $malfunctionEntities = $this->malfunctionRepository->findBy(['id' => $updatedMalfunctionIds]);
+
+        /** @var Malfunction[] $malfunctionIdToEntityMap */
+        $malfunctionIdToEntityMap = array_reduce(
+            $malfunctionEntities,
+            static function (array $acc, Malfunction $m) {
+                $acc[$m->id] = $m;
+                return $acc;
+            },
+            [],
+        );
+
+        foreach ($updatedMalfunctionIds as $id) {
+            $updatedFeatureIds = array_map('\intval', $malfunctions[$id]['updatedIds']);
+            $selectedFeatureIds = array_map('\intval', $malfunctions[$id]['selectedFeatureIds']);
+
+            foreach ($updatedFeatureIds as $featureId) {
+                $malfunctionToUpdate = $malfunctionIdToEntityMap[$id];
+
+                if (in_array($featureId, $selectedFeatureIds, true)) {
+                    // добавить к неисправности признак
+                    $feature = $this->featureRepository->find($featureId);
+                    $malfunctionToUpdate->features->add($feature);
+                } else {
+                    // удалить у неисправности признак
+                    /** @var Feature $feature */
+                    $feature = $malfunctionToUpdate->features->filter(static fn (Feature $f) => $f->id === $featureId)->first();
+                    $malfunctionToUpdate->features->removeElement($feature);
+                }
+            }
+        }
+
+        $this->entityManager->flush();
     }
 
     private function getData(): array
