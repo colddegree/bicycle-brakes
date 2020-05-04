@@ -15,6 +15,15 @@ class IntIntervalsToStringMapper
      */
     public function map(array $intervals): string
     {
-        return implode(' ∪ ', array_map(fn (IntValue $int) => sprintf('[%s; %s]', $int->lower, $int->upper), $intervals));
+        $intervalStrings = array_map(fn(IntValue $int) => $this->mapIntervalToString($int), $intervals);
+        return implode(' ∪ ', $intervalStrings);
+    }
+
+    private function mapIntervalToString(IntValue $int): string
+    {
+        if ($int->lower === $int->upper) {
+            return sprintf('{%d}', $int->lower);
+        }
+        return sprintf('[%d; %d]', $int->lower, $int->upper);
     }
 }

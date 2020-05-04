@@ -15,27 +15,49 @@ class RealIntervalsToStringMapper
      */
     public function map(array $intervals): string
     {
-        return implode(' ∪ ', array_map(fn (RealValue $int) => $this->mapIntervalToString($int), $intervals));
+        $intervalStrings = array_map(fn(RealValue $int) => $this->mapIntervalToString($int), $intervals);
+        return implode(' ∪ ', array_filter($intervalStrings));
     }
 
-    private function mapIntervalToString(RealValue $interval): string
+    private function mapIntervalToString(RealValue $int): string
     {
+        if ($int->lower === $int->upper && (!$int->lowerIsInclusive || !$int->upperIsInclusive)) {
+            return '';
+        }
+
+        if ($int->lower === $int->upper) {
+            return sprintf('{%s}', $this->mapFloatToString($int->lower));
+        }
+
         $result = '';
 
-        if ($interval->lowerIsInclusive) {
+        if ($int->lowerIsInclusive) {
             $result .= '[';
         } else {
             $result .= '(';
         }
 
-        $result .= sprintf('%s; %s', $interval->lower, $interval->upper); // TODO: check, mb need number_format
+        $result .= sprintf(
+            '%s; %s',
+            $this->mapFloatToString($int->lower),
+            $this->mapFloatToString($int->upper),
+        );
 
-        if ($interval->upperIsInclusive) {
+        if ($int->upperIsInclusive) {
             $result .= ']';
         } else {
             $result .= ')';
         }
 
         return $result;
+    }
+
+    private function mapFloatToString(float $f): string
+    {
+        $result = str_replace('.', ',', (string)$f);
+        if ($result === '0' || !strpos(',', $result)) {
+            return $result;
+        }
+        return rtrim($result, '0');
     }
 }
