@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import * as types from '../feature/types'
 import ScalarValuesEditor from './ScalarValuesEditor';
+import IntValuesEditor from './IntValuesEditor';
 
 const Root = props => {
-    const [features, setFeatures] = useState(props.features);
+    const { features } = props;
     const [selectedFeatureId, setSelectedFeatureId] = useState(features.length > 0 ? features[0].id : 0);
 
     if (features.length === 0) {
@@ -21,10 +22,6 @@ const Root = props => {
         return type.name.toLowerCase();
     };
 
-    const onSubmit = event => {
-        event.preventDefault();
-    };
-
     const createValuesEditor = feature => {
         switch (feature.type) {
             case types.SCALAR.id:
@@ -36,7 +33,15 @@ const Root = props => {
                     />
                 );
             case types.INT.id:
+                return (
+                    <IntValuesEditor
+                        featureId={feature.id}
+                        possibleValueDomain={feature.possibleValues[0]}
+                        normalValues={feature.normalValues}
+                    />
+                );
             case types.REAL.id:
+                // TODO
             default:
                 throw new Error('be da s feature type');
         }
@@ -63,7 +68,7 @@ const Root = props => {
                 </div>
             ))}
 
-            <button onClick={onSubmit}>Сохранить</button>
+            <button>Сохранить</button>
         </form>
     );
 };
