@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const ScalarValuesEditor = ({ featureId, possibleValues }) => {
-    const [checkedIdsMap, setCheckedIdsMap] = useState(possibleValues.map(v => ({ [v.id]: false })));
+const ScalarValuesEditor = ({ featureId, possibleValues, normalValues }) => {
+    const [checkedIdsMap, setCheckedIdsMap] = useState(possibleValues.reduce(
+        (idsMap, pv) => {
+            idsMap[pv.id] = !!normalValues.find(nv => nv.id === pv.id);
+            return idsMap;
+        },
+        {},
+    ));
 
     const onChange = (valueId, checked) => {
         setCheckedIdsMap(prevState => {
@@ -36,6 +42,10 @@ const ScalarValuesEditor = ({ featureId, possibleValues }) => {
 ScalarValuesEditor.propTypes = {
     featureId: PropTypes.number.isRequired,
     possibleValues: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        value: PropTypes.string.isRequired,
+    })).isRequired,
+    normalValues: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         value: PropTypes.string.isRequired,
     })).isRequired,

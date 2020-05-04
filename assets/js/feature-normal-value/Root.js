@@ -32,6 +32,7 @@ const Root = props => {
                     <ScalarValuesEditor
                         featureId={feature.id}
                         possibleValues={feature.possibleValues}
+                        normalValues={feature.normalValues}
                     />
                 );
             case types.INT.id:
