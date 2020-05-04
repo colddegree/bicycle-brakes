@@ -9,6 +9,11 @@ const ScalarValuesEditor = ({ featureId, possibleValues, normalValues }) => {
         },
         {},
     ));
+    const [updatedIds, setUpdatedIds] = useState(new Set());
+
+    if (possibleValues.length < 1) {
+        return 'Нет возможных значений';
+    }
 
     const onChange = (valueId, checked) => {
         setCheckedIdsMap(prevState => {
@@ -17,10 +22,13 @@ const ScalarValuesEditor = ({ featureId, possibleValues, normalValues }) => {
                 [valueId]: checked,
             };
         });
+        setUpdatedIds(prevState => prevState.add(valueId));
     };
 
     return <>
         <p>Выберите нормальные значения:</p>
+
+        <input type="hidden" name={`values[${featureId}][updatedIds]`} value={Array.from(updatedIds).join(',')} />
 
         {possibleValues.map(v => (
             <React.Fragment key={v.id}>
