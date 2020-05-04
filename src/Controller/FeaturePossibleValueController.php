@@ -61,8 +61,6 @@ class FeaturePossibleValueController extends AbstractController
     {
         // TODO: добавить валидацию
 
-        dump($request->request->all());//TODO
-
         $newValueArrays = [];
         $updatedValueArrays = [];
 
