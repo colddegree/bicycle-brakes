@@ -43,8 +43,8 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'name' => 'Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'scalar_Постоянный',
-                'scalar_Прерывистый',
+                'scalar_1_Постоянный',
+                'scalar_1_Прерывистый',
                 'scalar_Отсутствие трения',
             ],
             'normalValues' => [
@@ -240,7 +240,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
                 'scalar_Чёткий, ярко выраженный',
-                'scalar_Плавный',
+                'scalar_1_Плавный',
             ],
             'normalValues' => [
                 'scalar_Чёткий, ярко выраженный',

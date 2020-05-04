@@ -16,11 +16,11 @@ class ScalarValueFixture extends Fixture
     private const DATA = [
         [
             'name' => 'Постоянный',
-            '_ref' => 'scalar_Постоянный',
+            '_ref' => 'scalar_1_Постоянный',
         ],
         [
             'name' => 'Прерывистый',
-            '_ref' => 'scalar_Прерывистый',
+            '_ref' => 'scalar_1_Прерывистый',
         ],
         [
             'name' => 'Отсутствие трения',
@@ -56,7 +56,35 @@ class ScalarValueFixture extends Fixture
         ],
         [
             'name' => 'Плавный',
-            '_ref' => 'scalar_Плавный',
+            '_ref' => 'scalar_1_Плавный',
+        ],
+        [
+            'name' => 'Да',
+            '_ref' => 'scalar_4_Да',
+        ],
+        [
+            'name' => 'Плавный',
+            '_ref' => 'scalar_2_Плавный',
+        ],
+        [
+            'name' => 'Прерывистый',
+            '_ref' => 'scalar_2_Прерывистый',
+        ],
+        [
+            'name' => 'Нет',
+            '_ref' => 'scalar_4_Нет',
+        ],
+        [
+            'name' => 'Да',
+            '_ref' => 'scalar_5_Да',
+        ],
+        [
+            'name' => 'Постоянный',
+            '_ref' => 'scalar_2_Постоянный',
+        ],
+        [
+            'name' => 'Нет',
+            '_ref' => 'scalar_5_Нет',
         ],
     ];
 
