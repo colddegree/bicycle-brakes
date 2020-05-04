@@ -88,7 +88,7 @@ class IntervalMerger
      *
      * @return RealValue[]
      */
-    public function sortRealIntervals(array $intervals): array
+    private function sortRealIntervals(array $intervals): array
     {
         $lowerBounds = array_map(static fn (RealValue $v) => $v->lower, $intervals);
         $lowerBoundInclusiveFlags = array_map(static fn (RealValue $v) => (int)$v->lowerIsInclusive, $intervals);
