@@ -31,6 +31,7 @@ Encore
     .addEntry('feature-normal-value', './assets/js/feature-normal-value/index.js')
     .addEntry('malfunction', './assets/js/malfunction/index.js')
     .addEntry('clinical-picture', './assets/js/clinical-picture/index.js')
+    .addEntry('malfunction-feature-value', './assets/js/malfunction-feature-value/index.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
