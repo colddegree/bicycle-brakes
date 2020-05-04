@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import * as types from '../feature/types'
+import ScalarValuesEditor from './ScalarValuesEditor';
 
 const Root = props => {
     const [features, setFeatures] = useState(props.features);
@@ -24,6 +25,22 @@ const Root = props => {
         event.preventDefault();
     };
 
+    const createValuesEditor = feature => {
+        switch (feature.type) {
+            case types.SCALAR.id:
+                return (
+                    <ScalarValuesEditor
+                        featureId={feature.id}
+                        possibleValues={feature.possibleValues}
+                    />
+                );
+            case types.INT.id:
+            case types.REAL.id:
+            default:
+                throw new Error('be da s feature type');
+        }
+    };
+
     return (
         <form method="post">
             <select value={selectedFeatureId} onChange={onSelect}>
@@ -37,6 +54,13 @@ const Root = props => {
             </select>
 
             <p>Тип: {getTypeNameByFeatureId(selectedFeatureId)}</p>
+
+            {features.map(f => (
+                <div key={f.id} hidden={f.id !== selectedFeatureId}>
+                    {createValuesEditor(f)}
+                    <br />
+                </div>
+            ))}
 
             <button onClick={onSubmit}>Сохранить</button>
         </form>
