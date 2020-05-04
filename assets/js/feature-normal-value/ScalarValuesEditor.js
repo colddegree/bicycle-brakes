@@ -33,9 +33,9 @@ const ScalarValuesEditor = ({ featureId, possibleValues, normalValues }) => {
         {possibleValues.map(v => (
             <React.Fragment key={v.id}>
                 <label>
+                    <input type="hidden" name={`values[${featureId}][${v.id}][checked]`} value={checkedIdsMap[v.id]} />
                     <input
                         type="checkbox"
-                        name={`values[${featureId}][${v.id}][checked]`}
                         checked={checkedIdsMap[v.id]}
                         onChange={event => onChange(v.id, event.target.checked)}
                     />{' '}
