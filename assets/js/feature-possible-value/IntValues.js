@@ -64,7 +64,9 @@ const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                     required={true}
                 />
                 <br />
-                <button onClick={() => onDeleteDecorated(featureId, v.id)}>Удалить</button>
+                <button onClick={event => { event.preventDefault(); onDeleteDecorated(featureId, v.id) }}>
+                    Удалить
+                </button>
                 <br />
                 <br />
             </React.Fragment>
