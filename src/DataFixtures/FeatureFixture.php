@@ -37,6 +37,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upperIsInclusive' => true,
                 ],
             ],
+            '_ref' => 'feature_Расстояние от конца зажатой ручки тормоза до руля',
         ],
         [
             'name' => 'Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
@@ -49,6 +50,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'normalValues' => [
                 'scalar_Отсутствие трения',
             ],
+            '_ref' => 'feature_Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
         ],
         [
             'name' => 'Наличие скрипа при торможении',
@@ -60,6 +62,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'normalValues' => [
                 'scalar_1_Нет',
             ],
+            '_ref' => 'feature_Наличие скрипа при торможении',
         ],
         [
             'name' => 'Длина тормозного пути',
@@ -80,6 +83,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upperIsInclusive' => true,
                 ],
             ],
+            '_ref' => 'feature_Длина тормозного пути',
         ],
         [
             'name' => 'Толщина фрикциона внешней колодки',
@@ -100,6 +104,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upperIsInclusive' => true,
                 ],
             ],
+            '_ref' => 'feature_Толщина фрикциона внешней колодки',
         ],
         [
             'name' => 'Толщина фрикциона внутренней колодки',
@@ -120,6 +125,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upperIsInclusive' => true,
                 ],
             ],
+            '_ref' => 'feature_Толщина фрикциона внутренней колодки',
         ],
         [
             'name' => 'Меньше ли толщина ротора допустимой для него толщины',
@@ -131,6 +137,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'normalValues' => [
                 'scalar_2_Нет',
             ],
+            '_ref' => 'feature_Меньше ли толщина ротора допустимой для него толщины',
         ],
         [
             'name' => 'Расстояние между фрикционом внешней колодки тормоза и ротором при не зажатой ручке тормоза',
@@ -151,9 +158,10 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upperIsInclusive' => true,
                 ],
             ],
+            '_ref' => 'feature_Расстояние между фрикционом внешней колодки тормоза и ротором при не зажатой ручке тормоза',
         ],
         [
-            'name' => 'Расстояние между фрикционом внутренней колодки тормоза и ротором при не зажатой ручке тормоза,',
+            'name' => 'Расстояние между фрикционом внутренней колодки тормоза и ротором при не зажатой ручке тормоза',
             'type' => Feature::TYPE_REAL,
             'possibleValues' => [
                 [
@@ -171,6 +179,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upperIsInclusive' => true,
                 ],
             ],
+            '_ref' => 'feature_Расстояние между фрикционом внутренней колодки тормоза и ротором при не зажатой ручке тормоза',
         ],
         [
             'name' => 'Расстояние между фрикционом внешней колодки тормоза и ротором при зажатой ручке тормоза',
@@ -191,6 +200,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upperIsInclusive' => true,
                 ],
             ],
+            '_ref' => 'feature_Расстояние между фрикционом внешней колодки тормоза и ротором при зажатой ручке тормоза',
         ],
         [
             'name' => 'Расстояние между фрикционом внутренней колодки тормоза и ротором при зажатой ручке тормоза',
@@ -211,6 +221,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upperIsInclusive' => true,
                 ],
             ],
+            '_ref' => 'feature_Расстояние между фрикционом внутренней колодки тормоза и ротором при зажатой ручке тормоза',
         ],
         [
             'name' => 'Равноудалённость колодок от ротора',
@@ -222,6 +233,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'normalValues' => [
                 'scalar_3_Нет',
             ],
+            '_ref' => 'feature_Равноудалённость колодок от ротора',
         ],
         [
             'name' => 'Характер упора при зажатии ручки тормоза',
@@ -233,6 +245,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'normalValues' => [
                 'scalar_Чёткий, ярко выраженный',
             ],
+            '_ref' => 'feature_Характер упора при зажатии ручки тормоза',
         ],
         // TODO: remove
         [
@@ -254,6 +267,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                     'upper' => 30,
                 ],
             ],
+            '_ref' => 'feature_Тестовый целочисленный признак',
         ],
     ];
 
@@ -278,6 +292,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             }
 
             $manager->persist($feature);
+            $this->addReference($entry['_ref'], $feature);
         }
 
         $manager->flush();

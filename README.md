@@ -11,6 +11,8 @@ $ bin/console d:d:c
 $ bin/console d:m:m
 $ bin/console d:f:l
 
+bin/console d:d:d --force && bin/console d:d:c && bin/console d:m:m -n && bin/console d:f:l -n
+
 ## TODO
 
 - [ ] запилить навигацию через генерацию роутов в твиге
