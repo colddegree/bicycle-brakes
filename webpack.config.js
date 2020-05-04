@@ -28,6 +28,7 @@ Encore
     //.addEntry('page2', './assets/js/page2.js')
     .addEntry('feature', './assets/js/feature/index.js')
     .addEntry('feature-possible-value', './assets/js/feature-possible-value/index.js')
+    .addEntry('feature-normal-value', './assets/js/feature-normal-value/index.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
