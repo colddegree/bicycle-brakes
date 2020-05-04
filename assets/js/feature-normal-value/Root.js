@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import * as types from '../feature/types'
 import ScalarValuesEditor from './ScalarValuesEditor';
 import IntValuesEditor from './IntValuesEditor';
+import RealValuesEditor from './RealValuesEditor';
 
 const Root = props => {
     const { features } = props;
@@ -41,7 +42,13 @@ const Root = props => {
                     />
                 );
             case types.REAL.id:
-                // TODO
+                return (
+                    <RealValuesEditor
+                        featureId={feature.id}
+                        possibleValueDomain={feature.possibleValues[0]}
+                        normalValues={feature.normalValues}
+                    />
+                );
             default:
                 throw new Error('be da s feature type');
         }
