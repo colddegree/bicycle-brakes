@@ -11,10 +11,11 @@ use App\Entity\IntValue;
 use App\Entity\RealValue;
 use App\Entity\ScalarValue;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use RuntimeException;
 
-class FeatureFixture extends Fixture
+class FeatureFixture extends Fixture implements DependentFixtureInterface
 {
     private const DATA = [
         [
@@ -41,23 +42,23 @@ class FeatureFixture extends Fixture
             'name' => 'Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'Постоянный',
-                'Прерывистый',
-                'Отсутствие трения',
+                'scalar_Постоянный',
+                'scalar_Прерывистый',
+                'scalar_Отсутствие трения',
             ],
             'normalValues' => [
-                'Отсутствие трения',
+                'scalar_Отсутствие трения',
             ],
         ],
         [
             'name' => 'Наличие скрипа при торможении',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'Да',
-                'Нет',
+                'scalar_1_Да',
+                'scalar_1_Нет',
             ],
             'normalValues' => [
-                'Нет',
+                'scalar_1_Нет',
             ],
         ],
         [
@@ -124,11 +125,11 @@ class FeatureFixture extends Fixture
             'name' => 'Меньше ли толщина ротора допустимой для него толщины',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'Да',
-                'Нет',
+                'scalar_2_Да',
+                'scalar_2_Нет',
             ],
             'normalValues' => [
-                'Нет',
+                'scalar_2_Нет',
             ],
         ],
         [
@@ -215,22 +216,22 @@ class FeatureFixture extends Fixture
             'name' => 'Равноудалённость колодок от ротора',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'Да',
-                'Нет',
+                'scalar_3_Да',
+                'scalar_3_Нет',
             ],
             'normalValues' => [
-                'Да',
+                'scalar_3_Нет',
             ],
         ],
         [
             'name' => 'Характер упора при зажатии ручки тормоза',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'Чёткий, ярко выраженный',
-                'Плавный',
+                'scalar_Чёткий, ярко выраженный',
+                'scalar_Плавный',
             ],
             'normalValues' => [
-                'Чёткий, ярко выраженный',
+                'scalar_Чёткий, ярко выраженный',
             ],
         ],
         // TODO: remove
@@ -266,13 +267,13 @@ class FeatureFixture extends Fixture
 
             foreach ($entry['possibleValues'] as $valueData) {
                 $possibleValue = new FeaturePossibleValue($feature);
-                $this->populateValue($possibleValue, $valueData, $entry['type']);
+                $possibleValue = $this->populateValue($possibleValue, $valueData, $entry['type']);
                 $manager->persist($possibleValue);
             }
 
             foreach ($entry['normalValues'] as $valueData) {
                 $normalValue = new FeatureNormalValue($feature);
-                $this->populateValue($normalValue, $valueData, $entry['type']);
+                $normalValue = $this->populateValue($normalValue, $valueData, $entry['type']);
                 $manager->persist($normalValue);
             }
 
@@ -293,7 +294,9 @@ class FeatureFixture extends Fixture
     {
         switch ($type) {
             case Feature::TYPE_SCALAR:
-                $value->scalarValue = new ScalarValue($valueData);
+                /** @var ScalarValue $scalarValue */
+                $scalarValue = $this->getReference($valueData);
+                $value->scalarValue = $scalarValue;
                 break;
             case Feature::TYPE_INT:
                 $value->intValue = new IntValue($valueData['lower'], $valueData['upper']);
@@ -311,5 +314,15 @@ class FeatureFixture extends Fixture
         }
 
         return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDependencies()
+    {
+        return [
+            ScalarValueFixture::class,
+        ];
     }
 }
