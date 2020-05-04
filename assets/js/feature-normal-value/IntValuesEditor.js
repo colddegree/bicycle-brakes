@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import IntValues from '../feature-possible-value/IntValues';
+import deepcopy from 'deepcopy';
 
 const IntValuesEditor = ({ featureId, possibleValueDomain, normalValues }) => {
     const [values, setValues] = useState(normalValues);
@@ -14,11 +15,11 @@ const IntValuesEditor = ({ featureId, possibleValueDomain, normalValues }) => {
             const valueId = +matches[2];
             const fieldName = matches[3];
 
-            setValues(prevState => {
-                let valueToChange = prevState.find(v => v.id === valueId);
-                valueToChange[fieldName] = newValueProvider(event, fieldName);
-                return prevState;
-            });
+            const newValues = deepcopy(values);
+            let valueToChange = newValues.find(v => v.id === valueId);
+            valueToChange[fieldName] = newValueProvider(event, fieldName);
+
+            setValues(newValues);
         },
 
         onDelete(featureId, valueId) {
@@ -50,7 +51,7 @@ const IntValuesEditor = ({ featureId, possibleValueDomain, normalValues }) => {
 
     return <>
         <p>Область возможных значений: {possibleValueDomain}</p>
-        <p>Выберите нормальные значения:</p>
+        <p>Введите нормальные значения:</p>
 
         <IntValues
             featureId={featureId}
