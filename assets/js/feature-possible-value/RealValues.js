@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { REAL_MIN, REAL_MAX } from "./constraints";
 
-const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
+const RealValues = ({ featureId, fieldPathPrefix, values, onChange, onDelete, onAdd }) => {
     const [updatedIds, setUpdatedIds] = useState(new Set());
     const [deletedIds, setDeletedIds] = useState(new Set());
 
@@ -38,8 +38,8 @@ const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
     };
 
     return <>
-        <input type="hidden" name={`values[${featureId}][updatedIds]`} value={Array.from(updatedIds).join(',')} />
-        <input type="hidden" name={`values[${featureId}][deletedIds]`} value={Array.from(deletedIds).join(',')} />
+        <input type="hidden" name={`${fieldPathPrefix}[updatedIds]`} value={Array.from(updatedIds).join(',')} />
+        <input type="hidden" name={`${fieldPathPrefix}[deletedIds]`} value={Array.from(deletedIds).join(',')} />
 
         {values.map(v => (
             <React.Fragment key={`${featureId}-${v.id}`}>
@@ -47,7 +47,7 @@ const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                     Нижняя граница:{' '}
                     <input
                         type="number"
-                        name={`values[${featureId}][${v.id}][lower]`}
+                        name={`${fieldPathPrefix}[${v.id}][lower]`}
                         value={Number(v.lower).toFixed(2)}
                         onChange={event => { onChange(event); onChangeDecorated(v.id); }}
                         min={REAL_MIN}
@@ -59,7 +59,7 @@ const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                 <label>
                     <input
                         type="checkbox"
-                        name={`values[${featureId}][${v.id}][lowerIsInclusive]`}
+                        name={`${fieldPathPrefix}[${v.id}][lowerIsInclusive]`}
                         checked={v.lowerIsInclusive}
                         onChange={event => { onChange(event); onChangeDecorated(v.id); }}
                     />{' '}
@@ -71,7 +71,7 @@ const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                     Верхняя граница:{' '}
                     <input
                         type="number"
-                        name={`values[${featureId}][${v.id}][upper]`}
+                        name={`${fieldPathPrefix}[${v.id}][upper]`}
                         value={Number(v.upper).toFixed(2)}
                         onChange={event => { onChange(event); onChangeDecorated(v.id); }}
                         min={REAL_MIN}
@@ -83,7 +83,7 @@ const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                 <label>
                     <input
                         type="checkbox"
-                        name={`values[${featureId}][${v.id}][upperIsInclusive]`}
+                        name={`${fieldPathPrefix}[${v.id}][upperIsInclusive]`}
                         checked={v.upperIsInclusive}
                         onChange={event => { onChange(event); onChangeDecorated(v.id); }}
                     />{' '}
@@ -103,6 +103,7 @@ const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
 
 RealValues.propTypes = {
     featureId: PropTypes.number.isRequired,
+    fieldPathPrefix: PropTypes.string.isRequired,
     values: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         lower: PropTypes.number.isRequired,

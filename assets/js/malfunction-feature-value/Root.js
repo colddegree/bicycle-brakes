@@ -68,6 +68,8 @@ const Root = ({ malfunctions }) => {
                     <RealValuesEditor
                         actionText={'Введите значения признаков выбранной неисправности:'}
                         featureId={feature.id}
+                        fieldPathPrefix={`malfunctions[${selectedMalfunction.id}][features][real][${selectedFeature.id}]`}
+                        pathRegex={/^malfunctions\[-?\d+]\[features]\[real]\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/}
                         possibleValueDomain={feature.possibleValueDomain}
                         values={feature.values}
                     />

@@ -132,6 +132,7 @@ const Root = props => {
                 return (
                     <RealValues
                         featureId={feature.id}
+                        fieldPathPrefix={`values[${feature.id}]`}
                         values={feature.possibleValues}
                         onChange={realHandlers.onChange}
                         onDelete={realHandlers.onDelete}
