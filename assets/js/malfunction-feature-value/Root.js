@@ -128,6 +128,11 @@ Root.propTypes = {
                     upperIsInclusive: PropTypes.bool.isRequired,
                 }),
             ])).isRequired,
+            possibleScalarValues: PropTypes.arrayOf(PropTypes.shape({
+                id: PropTypes.number.isRequired,
+                name: PropTypes.string.isRequired,
+            })),
+            possibleValueDomain: PropTypes.string,
         })).isRequired,
     })).isRequired,
 };

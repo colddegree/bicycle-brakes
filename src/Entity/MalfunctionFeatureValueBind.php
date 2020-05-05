@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\IntervalMerger;
+use App\Mapper\IntIntervalsToStringMapper;
+use App\Mapper\RealIntervalsToStringMapper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -60,28 +63,62 @@ class MalfunctionFeatureValueBind
         $this->realValues = new ArrayCollection();
     }
 
-    public function getValuesAsArray(): array
-    {
+    public function getValuesAsArray(
+        IntervalMerger $intervalMerger,
+        IntIntervalsToStringMapper $intIntervalsToStringMapper,
+        RealIntervalsToStringMapper $realIntervalsToStringMapper
+    ): array {
         switch ($this->feature->type) {
             case Feature::TYPE_SCALAR:
-                return $this->scalarValues->map(static fn (ScalarValue $v) => [
-                    'id' => $v->id,
-                    'value' => $v->value,
-                ])->toArray();
+                $possibleValues = $possibleValues = $this->feature->possibleValues
+                    ->map(static fn (FeaturePossibleValue $pv) => [
+                        'id' => $pv->scalarValue->id,
+                        'value' => $pv->scalarValue->value,
+                    ])
+                    ->toArray();
+                return [
+                        $this->scalarValues->map(static fn (ScalarValue $v) => [
+                        'id' => $v->id,
+                        'value' => $v->value,
+                    ])->toArray(),
+                    $possibleValues,
+                    null,
+                ];
+
             case Feature::TYPE_INT:
-                return $this->intValues->map(static fn (IntValue $v) => [
-                    'id' => $v->id,
-                    'lower' => $v->lower,
-                    'upper' => $v->upper,
-                ])->toArray();
+                $possibleValues = $this->feature->possibleValues
+                    ->map(static fn (FeaturePossibleValue $pv) => $pv->intValue)
+                    ->toArray();
+                $mergedIntervals = $intervalMerger->mergeInt($possibleValues);
+                $possibleValueDomainString = $intIntervalsToStringMapper->map($mergedIntervals);
+                return [
+                    $this->intValues->map(static fn (IntValue $v) => [
+                        'id' => $v->id,
+                        'lower' => $v->lower,
+                        'upper' => $v->upper,
+                    ])->toArray(),
+                    null,
+                    $possibleValueDomainString,
+                ];
+
             case Feature::TYPE_REAL:
-                return $this->realValues->map(static fn (RealValue $v) => [
-                    'id' => $v->id,
-                    'lower' => $v->lower,
-                    'lowerIsInclusive' => $v->lowerIsInclusive,
-                    'upper' => $v->upper,
-                    'upperIsInclusive' => $v->upperIsInclusive,
-                ])->toArray();
+                $possibleValues = $this->feature->possibleValues
+                    ->map(static fn (FeaturePossibleValue $pv) => $pv->realValue)
+                    ->toArray();
+                $mergedIntervals = $intervalMerger->mergeReal($possibleValues);
+                $possibleValueDomainString = $realIntervalsToStringMapper->map($mergedIntervals);
+                return [
+                    $this->realValues->map(static fn (RealValue $v) => [
+                        'id' => $v->id,
+                        'lower' => $v->lower,
+                        'lowerIsInclusive' => $v->lowerIsInclusive,
+                        'upper' => $v->upper,
+                        'upperIsInclusive' => $v->upperIsInclusive,
+                    ])->toArray(),
+                    null,
+                    $possibleValueDomainString,
+                ];
+
             default:
                 throw new RuntimeException(sprintf('Unsupported type "%s"', $this->feature->type));
         }
