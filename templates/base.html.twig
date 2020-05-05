@@ -4,24 +4,30 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
+
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> {# стили для навигации #}
     </head>
     <body>
         {% block navigation %}
-            <ul>
-                <li>Редактор знаний
-                    <ul>
-                        <li><a href="{{ path('признаки') }}">Признаки</a></li>
-                        <li><a href="{{ path('неисправности') }}">Неисправности</a></li>
-                        <li><a href="{{ path('возможные-значения-признаков') }}">Возможные значения признаков</a></li>
-                        <li><a href="{{ path('нормальные-значения-признаков') }}">Нормальные значения признаков</a></li>
-                        <li><a href="{{ path('клинические-картины') }}">Клинические картины</a></li>
-                        <li><a href="{{ path('значения-признаков-неисправностей') }}">Значения признаков неисправностей</a></li>
-                    </ul>
-                </li>
-                <li>Дерево знаний (WIP)</li>
-                <li>Решатель задач (WIP)</li>
-            </ul>
+            <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:25%;">
+                <h3 class="w3-bar-item">Меню</h3>
+                <ul style="list-style-type: none;">
+                    <li>Редактор знаний
+                        <ul style="list-style-type: none;">
+                            <li><a class="w3-bar-item w3-button" href="{{ path('признаки') }}">Признаки</a></li>
+                            <li><a class="w3-bar-item w3-button" href="{{ path('неисправности') }}">Неисправности</a></li>
+                            <li><a class="w3-bar-item w3-button" href="{{ path('возможные-значения-признаков') }}">Возможные значения признаков</a></li>
+                            <li><a class="w3-bar-item w3-button" href="{{ path('нормальные-значения-признаков') }}">Нормальные значения признаков</a></li>
+                            <li><a class="w3-bar-item w3-button" href="{{ path('клинические-картины') }}">Клинические картины</a></li>
+                            <li><a class="w3-bar-item w3-button" href="{{ path('значения-признаков-неисправностей') }}">Значения признаков неисправностей</a></li>
+                        </ul>
+                    </li>
+                    <li>Дерево знаний (WIP)</li>
+                    <li>Решатель задач (WIP)</li>
+                </ul>
+            </div>
         {% endblock %}
+
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
