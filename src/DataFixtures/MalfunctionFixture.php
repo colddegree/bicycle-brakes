@@ -82,10 +82,17 @@ class MalfunctionFixture extends Fixture implements DependentFixtureInterface
         ],
         // TODO: remove
         [
-            'name' => 'Неисправность без признаков',
+            'name' => 'Тестовая неисправность без признаков',
             'clinicalPicture' => [
             ],
             '_ref' => 'malfunction_Неисправность без признаков',
+        ],
+        [
+            'name' => 'Тестовая неисправность с целочисленным признаком',
+            'clinicalPicture' => [
+                'feature_Тестовый целочисленный признак',
+            ],
+            '_ref' => 'malfunction_Тестовая неисправность с целочисленным признаком',
         ],
     ];
 

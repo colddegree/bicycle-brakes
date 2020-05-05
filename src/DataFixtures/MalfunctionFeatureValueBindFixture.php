@@ -213,7 +213,7 @@ class MalfunctionFeatureValueBindFixture extends Fixture implements DependentFix
         ],
         // TODO: remove
         [
-            'malfunction' => 'malfunction_Смещение калипера от плоскости ротора',
+            'malfunction' => 'malfunction_Тестовая неисправность с целочисленным признаком',
             'feature' => 'feature_Тестовый целочисленный признак',
             'values' => [
                 [
