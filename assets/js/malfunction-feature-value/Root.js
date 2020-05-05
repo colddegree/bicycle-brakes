@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import * as types from '../feature/types'
 import ScalarValuesEditor from './ScalarValueEditor';
+import IntValuesEditor from '../feature-normal-value/IntValuesEditor';
+import RealValuesEditor from '../feature-normal-value/RealValuesEditor';
 
 const Root = ({ malfunctions }) => {
     const [selectedMalfunction, setSelectedMalfunction] = useState(
@@ -51,9 +53,21 @@ const Root = ({ malfunctions }) => {
                     />
                 );
             case types.INT.id:
-                return 'IntValuesEditor';
+                return (
+                    <IntValuesEditor
+                        featureId={feature.id}
+                        possibleValueDomain={feature.possibleValueDomain}
+                        values={feature.values}
+                    />
+                );
             case types.REAL.id:
-                return 'RealValuesEditor';
+                return (
+                    <RealValuesEditor
+                        featureId={feature.id}
+                        possibleValueDomain={feature.possibleValueDomain}
+                        values={feature.values}
+                    />
+                );
             default:
                 throw new Error('be da s feature type');
         }
