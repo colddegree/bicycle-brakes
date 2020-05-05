@@ -4,7 +4,7 @@ import IntValues from '../feature-possible-value/IntValues';
 import deepcopy from 'deepcopy';
 
 const IntValuesEditor = props => {
-    const { featureId, possibleValueDomain } = props;
+    const { actionText, featureId, possibleValueDomain } = props;
     const [values, setValues] = useState(props.values);
 
     // копипаста из feature-possible-value/Root, переделанная под values
@@ -52,7 +52,7 @@ const IntValuesEditor = props => {
 
     return <>
         <p>Область возможных значений: {possibleValueDomain}</p>
-        <p>Введите нормальные значения:</p>
+        <p>{actionText}</p>
 
         <IntValues
             featureId={featureId}
@@ -65,6 +65,7 @@ const IntValuesEditor = props => {
 };
 
 IntValuesEditor.propTypes = {
+    actionText: PropTypes.string.isRequired,
     featureId: PropTypes.number.isRequired,
     possibleValueDomain: PropTypes.string.isRequired,
     values: PropTypes.arrayOf(PropTypes.shape({

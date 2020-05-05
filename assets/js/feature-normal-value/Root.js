@@ -36,6 +36,7 @@ const Root = props => {
             case types.INT.id:
                 return (
                     <IntValuesEditor
+                        actionText={'Введите нормальные значения:'}
                         featureId={feature.id}
                         possibleValueDomain={feature.possibleValues[0]}
                         values={feature.normalValues}
@@ -44,6 +45,7 @@ const Root = props => {
             case types.REAL.id:
                 return (
                     <RealValuesEditor
+                        actionText={'Введите нормальные значения:'}
                         featureId={feature.id}
                         possibleValueDomain={feature.possibleValues[0]}
                         values={feature.normalValues}

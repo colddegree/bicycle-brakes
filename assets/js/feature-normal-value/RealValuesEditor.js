@@ -4,7 +4,7 @@ import RealValues from '../feature-possible-value/RealValues';
 import deepcopy from 'deepcopy';
 
 const RealValuesEditor = props => {
-    const { featureId, possibleValueDomain } = props;
+    const { actionText, featureId, possibleValueDomain } = props;
     const [values, setValues] = useState(props.values);
 
     // копипаста из feature-possible-value/Root, переделанная под values
@@ -62,7 +62,7 @@ const RealValuesEditor = props => {
 
     return <>
         <p>Область возможных значений: {possibleValueDomain}</p>
-        <p>Введите нормальные значения:</p>
+        <p>{actionText}</p>
 
         <RealValues
             featureId={featureId}
@@ -75,6 +75,7 @@ const RealValuesEditor = props => {
 };
 
 RealValuesEditor.propTypes = {
+    actionText: PropTypes.string.isRequired,
     featureId: PropTypes.number.isRequired,
     possibleValueDomain: PropTypes.string.isRequired,
     values: PropTypes.arrayOf(PropTypes.shape({

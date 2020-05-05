@@ -56,6 +56,7 @@ const Root = ({ malfunctions }) => {
             case types.INT.id:
                 return (
                     <IntValuesEditor
+                        actionText={'Введите значения признаков выбранной неисправности:'}
                         featureId={feature.id}
                         possibleValueDomain={feature.possibleValueDomain}
                         values={feature.values}
@@ -64,6 +65,7 @@ const Root = ({ malfunctions }) => {
             case types.REAL.id:
                 return (
                     <RealValuesEditor
+                        actionText={'Введите значения признаков выбранной неисправности:'}
                         featureId={feature.id}
                         possibleValueDomain={feature.possibleValueDomain}
                         values={feature.values}
