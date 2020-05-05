@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import * as types from '../feature/types'
+import ScalarValuesEditor from './ScalarValueEditor';
 
 const Root = ({ malfunctions }) => {
-    const [selectedMalfunctionId, setSelectedMalfunctionId] = useState(
-        malfunctions.length > 0
-            ? malfunctions[0].id
-            : null,
+    const [selectedMalfunction, setSelectedMalfunction] = useState(
+        malfunctions.length > 0 ? malfunctions[0] : {},
     );
-    const [selectedFeatureId, setSelectedFeatureId] = useState(
+    const [selectedFeature, setSelectedFeature] = useState(
         malfunctions.length > 0 && malfunctions[0].features.length > 0
-            ? malfunctions[0].features[0].id
-            : null,
+            ? malfunctions[0].features[0]
+            : {},
     );
 
     if (malfunctions.length < 1) {
@@ -20,26 +19,37 @@ const Root = ({ malfunctions }) => {
 
     const onMalfunctionSelect = event => {
         const newMalfunctionId = +event.target.value;
-        setSelectedMalfunctionId(newMalfunctionId);
+        setSelectedMalfunction(malfunctions.find(m => m.id === newMalfunctionId));
 
         // reset selected feature id
         const features = malfunctions.find(m => m.id === newMalfunctionId).features;
-        setSelectedFeatureId(features.length > 0 ? features[0].id : 0);
+        setSelectedFeature(features.length > 0 ? features[0] : {});
     };
 
     const onFeatureSelect = event => {
-        setSelectedFeatureId(+event.target.value);
+        const featureId = +event.target.value;
+        setSelectedFeature(selectedMalfunction.features.find(f => f.id === featureId));
     };
 
-    const getTypeNameByFeature = ({ type }) => {
-        return Object.values(types).find(t => t.id === type).name.toLowerCase();
+    const getTypeNameByFeature = feature => {
+        const type = Object.values(types).find(t => t.id === feature.type);
+        if (!type) {
+            return '';
+        }
+        return type.name.toLowerCase();
     };
 
     // TODO
     const createValuesEditor = feature => {
         switch (feature.type) {
             case types.SCALAR.id:
-                return 'ScalarValuesEditor';
+                return (
+                    <ScalarValuesEditor
+                        malfunctionId={selectedMalfunction.id}
+                        possibleValues={feature.possibleScalarValues}
+                        values={feature.values}
+                    />
+                );
             case types.INT.id:
                 return 'IntValuesEditor';
             case types.REAL.id:
@@ -54,7 +64,7 @@ const Root = ({ malfunctions }) => {
             <label>
                 Неисправность
                 <br />
-                <select value={selectedMalfunctionId} onChange={onMalfunctionSelect}>
+                <select value={selectedMalfunction.id} onChange={onMalfunctionSelect}>
                     {malfunctions.map(m => (
                         <React.Fragment key={m.id}>
                             <option value={m.id}>
@@ -67,35 +77,39 @@ const Root = ({ malfunctions }) => {
             <br />
             <br />
 
-            {malfunctions.find(m => m.id === selectedMalfunctionId).features.length < 1 ? (
-                <p>В клинической картине выбранной неисправности нет признаков</p>
-            ) : (
-                <>
-                    <label>
-                        Признак
-                        <br />
-                        <select value={selectedFeatureId} onChange={onFeatureSelect}>
-                            {malfunctions.find(m => m.id === selectedMalfunctionId).features.map(f => (
-                                <React.Fragment key={f.id}>
-                                    <option value={f.id}>
-                                        {f.name} (признак #{f.id})
-                                    </option>
-                                </React.Fragment>
+            {malfunctions.map(m => (
+                <div key={m.id} hidden={m.id !== selectedMalfunction.id}>
+                    {m.features.length < 1 ? (
+                        <p>В клинической картине выбранной неисправности нет признаков</p>
+                    ) : (
+                        <>
+                            <label>
+                                Признак
+                                <br />
+                                <select value={selectedFeature.id} onChange={onFeatureSelect}>
+                                    {m.features.map(f => (
+                                        <React.Fragment key={f.id}>
+                                            <option value={f.id}>
+                                                {f.name} (признак #{f.id})
+                                            </option>
+                                        </React.Fragment>
+                                    ))}
+                                </select>
+                            </label>
+
+                            <p>Тип: {getTypeNameByFeature(selectedFeature)}</p>
+
+                            <p>Значения</p>
+                            {m.features.map(f => (
+                                <div key={f.id} hidden={f.id !== selectedFeature.id}>
+                                    {createValuesEditor(f)}
+                                    <br />
+                                </div>
                             ))}
-                        </select>
-                    </label>
-
-                    <p>Тип: {getTypeNameByFeature(malfunctions.find(m => m.id === selectedMalfunctionId).features.find(
-                        f => f.id === selectedFeatureId))}</p>
-
-                    {malfunctions.find(m => m.id === selectedMalfunctionId).features.map(f => (
-                        <div key={f.id} hidden={f.id !== selectedFeatureId}>
-                            {createValuesEditor(f)}
-                            <br />
-                        </div>
-                    ))}
-                </>
-            )}
+                        </>
+                    )}
+                </div>
+            ))}
 
             <button>Сохранить</button>
         </form>
@@ -130,7 +144,7 @@ Root.propTypes = {
             ])).isRequired,
             possibleScalarValues: PropTypes.arrayOf(PropTypes.shape({
                 id: PropTypes.number.isRequired,
-                name: PropTypes.string.isRequired,
+                value: PropTypes.string.isRequired,
             })),
             possibleValueDomain: PropTypes.string,
         })).isRequired,
