@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import IntValues from '../feature-possible-value/IntValues';
 import deepcopy from 'deepcopy';
 
-const IntValuesEditor = ({ featureId, possibleValueDomain, normalValues }) => {
-    const [values, setValues] = useState(normalValues);
+const IntValuesEditor = props => {
+    const { featureId, possibleValueDomain } = props;
+    const [values, setValues] = useState(props.values);
 
     // копипаста из feature-possible-value/Root, переделанная под values
     // TODO: вынести общий функционал
@@ -66,7 +67,7 @@ const IntValuesEditor = ({ featureId, possibleValueDomain, normalValues }) => {
 IntValuesEditor.propTypes = {
     featureId: PropTypes.number.isRequired,
     possibleValueDomain: PropTypes.string.isRequired,
-    normalValues: PropTypes.arrayOf(PropTypes.shape({
+    values: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         lower: PropTypes.number.isRequired,
         upper: PropTypes.number.isRequired,

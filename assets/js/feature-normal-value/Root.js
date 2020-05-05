@@ -38,7 +38,7 @@ const Root = props => {
                     <IntValuesEditor
                         featureId={feature.id}
                         possibleValueDomain={feature.possibleValues[0]}
-                        normalValues={feature.normalValues}
+                        values={feature.normalValues}
                     />
                 );
             case types.REAL.id:
@@ -46,7 +46,7 @@ const Root = props => {
                     <RealValuesEditor
                         featureId={feature.id}
                         possibleValueDomain={feature.possibleValues[0]}
-                        normalValues={feature.normalValues}
+                        values={feature.normalValues}
                     />
                 );
             default:

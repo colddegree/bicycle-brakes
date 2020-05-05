@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import RealValues from '../feature-possible-value/RealValues';
 import deepcopy from 'deepcopy';
 
-const RealValuesEditor = ({ featureId, possibleValueDomain, normalValues }) => {
-    const [values, setValues] = useState(normalValues);
+const RealValuesEditor = props => {
+    const { featureId, possibleValueDomain } = props;
+    const [values, setValues] = useState(props.values);
 
     // копипаста из feature-possible-value/Root, переделанная под values
     // TODO: вынести общий функционал
@@ -76,7 +77,7 @@ const RealValuesEditor = ({ featureId, possibleValueDomain, normalValues }) => {
 RealValuesEditor.propTypes = {
     featureId: PropTypes.number.isRequired,
     possibleValueDomain: PropTypes.string.isRequired,
-    normalValues: PropTypes.arrayOf(PropTypes.shape({
+    values: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         lower: PropTypes.number.isRequired,
         lowerIsInclusive: PropTypes.bool.isRequired,
