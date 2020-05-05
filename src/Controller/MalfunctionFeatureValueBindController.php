@@ -47,6 +47,7 @@ class MalfunctionFeatureValueBindController extends AbstractController
             $malfunctionItem = [
                 'id' => $malfunction->id,
                 'name' => $malfunction->name,
+                'features' => [],
             ];
 
             foreach ($malfunction->features as $feature) {
