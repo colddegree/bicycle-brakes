@@ -70,17 +70,17 @@ class MalfunctionFeatureValueBind
     ): array {
         switch ($this->feature->type) {
             case Feature::TYPE_SCALAR:
-                $possibleValues = $possibleValues = $this->feature->possibleValues
+                $possibleValues = $this->feature->possibleValues
                     ->map(static fn (FeaturePossibleValue $pv) => [
                         'id' => $pv->scalarValue->id,
                         'value' => $pv->scalarValue->value,
                     ])
                     ->toArray();
                 return [
-                        $this->scalarValues->map(static fn (ScalarValue $v) => [
+                    array_values($this->scalarValues->map(static fn (ScalarValue $v) => [
                         'id' => $v->id,
                         'value' => $v->value,
-                    ])->toArray(),
+                    ])->toArray()),
                     $possibleValues,
                     null,
                 ];
@@ -92,11 +92,11 @@ class MalfunctionFeatureValueBind
                 $mergedIntervals = $intervalMerger->mergeInt($possibleValues);
                 $possibleValueDomainString = $intIntervalsToStringMapper->map($mergedIntervals);
                 return [
-                    $this->intValues->map(static fn (IntValue $v) => [
+                    array_values($this->intValues->map(static fn (IntValue $v) => [
                         'id' => $v->id,
                         'lower' => $v->lower,
                         'upper' => $v->upper,
-                    ])->toArray(),
+                    ])->toArray()),
                     null,
                     $possibleValueDomainString,
                 ];
@@ -108,13 +108,13 @@ class MalfunctionFeatureValueBind
                 $mergedIntervals = $intervalMerger->mergeReal($possibleValues);
                 $possibleValueDomainString = $realIntervalsToStringMapper->map($mergedIntervals);
                 return [
-                    $this->realValues->map(static fn (RealValue $v) => [
+                    array_values($this->realValues->map(static fn (RealValue $v) => [
                         'id' => $v->id,
                         'lower' => $v->lower,
                         'lowerIsInclusive' => $v->lowerIsInclusive,
                         'upper' => $v->upper,
                         'upperIsInclusive' => $v->upperIsInclusive,
-                    ])->toArray(),
+                    ])->toArray()),
                     null,
                     $possibleValueDomainString,
                 ];

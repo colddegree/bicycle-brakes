@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Feature;
+use App\Entity\FeaturePossibleValue;
 use App\Entity\Malfunction;
 use App\Entity\MalfunctionFeatureValueBind;
+use App\Entity\ScalarValue;
 use App\IntervalMerger;
 use App\Mapper\IntIntervalsToStringMapper;
 use App\Mapper\RealIntervalsToStringMapper;
@@ -21,6 +24,7 @@ class MalfunctionFeatureValueBindController extends AbstractController
     private EntityManagerInterface $entityManager;
     private ObjectRepository $malfunctionRepository;
     private ObjectRepository $malfunctionFeatureValueBindRepository;
+    private ObjectRepository $featureRepository;
     private IntervalMerger $intervalMerger;
     private IntIntervalsToStringMapper $intIntervalsToStringMapper;
     private RealIntervalsToStringMapper $realIntervalsToStringMapper;
@@ -34,6 +38,7 @@ class MalfunctionFeatureValueBindController extends AbstractController
         $this->entityManager = $entityManager;
         $this->malfunctionRepository = $entityManager->getRepository(Malfunction::class);
         $this->malfunctionFeatureValueBindRepository = $entityManager->getRepository(MalfunctionFeatureValueBind::class);
+        $this->featureRepository = $entityManager->getRepository(Feature::class);
         $this->intervalMerger = $intervalMerger;
         $this->intIntervalsToStringMapper = $intIntervalsToStringMapper;
         $this->realIntervalsToStringMapper = $realIntervalsToStringMapper;
@@ -45,12 +50,69 @@ class MalfunctionFeatureValueBindController extends AbstractController
     public function index(Request $request): Response
     {
         if ($request->isMethod(Request::METHOD_POST)) {
-            dump($request->request->all());
+            $this->handlePost($request);
         }
 
         return $this->render('malfunction_feature_value_bind/index.html.twig', [
             'data' => json_encode($this->getData(),  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
         ]);
+    }
+
+    private function handlePost(Request $request): void
+    {
+        // TODO: добавить валидацию
+
+        $this->handleScalarValues($request);
+        $this->handleIntAndRealValues($request);
+        $this->entityManager->flush();
+    }
+
+    private function handleScalarValues(Request $request): void
+    {
+        $malfunctions = $request->request->get('malfunctions', []);
+
+        if (empty($malfunctions)) {
+            return;
+        }
+
+        foreach ($malfunctions as $m) {
+            /** @var Malfunction $malfunction */
+            $malfunction = $this->malfunctionRepository->find((int)$m['id']);
+
+            foreach ($m['scalarFeatures'] as $f) {
+                /** @var Feature $feature */
+                $feature = $this->featureRepository->find((int)$f['id']);
+
+                /** @var MalfunctionFeatureValueBind $bind */
+                $bind = current($this->malfunctionFeatureValueBindRepository->findBy([
+                    'malfunction' => $malfunction,
+                    'feature' => $feature,
+                ]));
+
+                $checkedIds = array_map('\intval', $f['selectedIds']);
+
+                foreach ($f['updatedIds'] as $id) {
+                    $id = (int)$id;
+                    if (in_array($id, $checkedIds, true)) {
+                        $scalarValueToAdd = $feature->possibleValues
+                            ->filter(static fn (FeaturePossibleValue $fpv) => $fpv->scalarValue->id === $id)
+                            ->first()
+                            ->scalarValue;
+                        $bind->scalarValues->add($scalarValueToAdd);
+                    } else {
+                        $scalarValueToRemove = $bind->scalarValues
+                            ->filter(static fn(ScalarValue $v) => $v->id === $id)
+                            ->first();
+                        $bind->scalarValues->removeElement($scalarValueToRemove);
+                    }
+                }
+            }
+        }
+    }
+
+    private function handleIntAndRealValues(Request $request): void
+    {
+        // TODO
     }
 
     private function getData(): array
