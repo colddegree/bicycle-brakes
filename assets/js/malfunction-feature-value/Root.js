@@ -48,6 +48,7 @@ const Root = ({ malfunctions }) => {
                 return (
                     <ScalarValuesEditor
                         malfunctionId={selectedMalfunction.id}
+                        featureId={feature.id}
                         possibleValues={feature.possibleScalarValues}
                         values={feature.values}
                     />
@@ -81,9 +82,7 @@ const Root = ({ malfunctions }) => {
                 <select value={selectedMalfunction.id} onChange={onMalfunctionSelect}>
                     {malfunctions.map(m => (
                         <React.Fragment key={m.id}>
-                            <option value={m.id}>
-                                {m.name} (неисправность #{m.id})
-                            </option>
+                            <option value={m.id}>{m.name} (#{m.id})</option>
                         </React.Fragment>
                     ))}
                 </select>
@@ -103,9 +102,7 @@ const Root = ({ malfunctions }) => {
                                 <select value={selectedFeature.id} onChange={onFeatureSelect}>
                                     {m.features.map(f => (
                                         <React.Fragment key={f.id}>
-                                            <option value={f.id}>
-                                                {f.name} (признак #{f.id})
-                                            </option>
+                                            <option value={f.id}>{f.name} (#{f.id})</option>
                                         </React.Fragment>
                                     ))}
                                 </select>
