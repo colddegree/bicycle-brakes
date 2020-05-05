@@ -38,6 +38,7 @@ const Root = props => {
                     <IntValuesEditor
                         actionText={'Введите нормальные значения:'}
                         featureId={feature.id}
+                        fieldPathPrefix={`values[${feature.id}]`}
                         possibleValueDomain={feature.possibleValues[0]}
                         values={feature.normalValues}
                     />

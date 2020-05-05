@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { INT_MIN, INT_MAX } from "./constraints";
 
-const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
+const IntValues = ({ featureId, fieldPathPrefix, values, onChange, onDelete, onAdd }) => {
     const [updatedIds, setUpdatedIds] = useState(new Set());
     const [deletedIds, setDeletedIds] = useState(new Set());
 
@@ -36,8 +36,8 @@ const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
     };
 
     return <>
-        <input type="hidden" name={`values[${featureId}][updatedIds]`} value={Array.from(updatedIds).join(',')} />
-        <input type="hidden" name={`values[${featureId}][deletedIds]`} value={Array.from(deletedIds).join(',')} />
+        <input type="hidden" name={`${fieldPathPrefix}[updatedIds]`} value={Array.from(updatedIds).join(',')} />
+        <input type="hidden" name={`${fieldPathPrefix}[deletedIds]`} value={Array.from(deletedIds).join(',')} />
 
         {values.map(v => (
             <React.Fragment key={`${featureId}-${v.id}`}>
@@ -45,7 +45,7 @@ const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                     Нижняя граница:{' '}
                     <input
                         type="number"
-                        name={`values[${featureId}][${v.id}][lower]`}
+                        name={`${fieldPathPrefix}[${v.id}][lower]`}
                         value={v.lower}
                         onChange={event => { onChange(event); onChangeDecorated(v.id); }}
                         min={INT_MIN}
@@ -59,7 +59,7 @@ const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                     Верхняя граница:{' '}
                     <input
                         type="number"
-                        name={`values[${featureId}][${v.id}][upper]`}
+                        name={`${fieldPathPrefix}[${v.id}][upper]`}
                         value={v.upper}
                         onChange={event => { onChange(event); onChangeDecorated(v.id); }}
                         min={INT_MIN}
@@ -68,7 +68,7 @@ const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                     />
                 </label>
                 <br />
-                
+
                 <button onClick={event => { event.preventDefault(); onDeleteDecorated(featureId, v.id) }}>
                     Удалить
                 </button>
@@ -84,6 +84,7 @@ const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
 
 IntValues.propTypes = {
     featureId: PropTypes.number.isRequired,
+    fieldPathPrefix: PropTypes.string.isRequired,
     values: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         lower: PropTypes.number.isRequired,

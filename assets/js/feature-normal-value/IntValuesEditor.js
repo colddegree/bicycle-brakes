@@ -4,14 +4,14 @@ import IntValues from '../feature-possible-value/IntValues';
 import deepcopy from 'deepcopy';
 
 const IntValuesEditor = props => {
-    const { actionText, featureId, possibleValueDomain } = props;
+    const { actionText, featureId, fieldPathPrefix, pathRegex, possibleValueDomain } = props;
     const [values, setValues] = useState(props.values);
 
     // копипаста из feature-possible-value/Root, переделанная под values
     // TODO: вынести общий функционал
     const genericHandlers = {
         onChange(event, newValueProvider) {
-            const matches = event.target.name.match(/^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
+            const matches = event.target.name.match(pathRegex || /^values\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/);
             const featureId = +matches[1];
             const valueId = +matches[2];
             const fieldName = matches[3];
@@ -56,6 +56,7 @@ const IntValuesEditor = props => {
 
         <IntValues
             featureId={featureId}
+            fieldPathPrefix={fieldPathPrefix}
             values={values}
             onChange={intHandlers.onChange}
             onDelete={intHandlers.onDelete}
@@ -67,6 +68,8 @@ const IntValuesEditor = props => {
 IntValuesEditor.propTypes = {
     actionText: PropTypes.string.isRequired,
     featureId: PropTypes.number.isRequired,
+    fieldPathPrefix: PropTypes.string.isRequired,
+    pathRegex: PropTypes.instanceOf(RegExp),
     possibleValueDomain: PropTypes.string.isRequired,
     values: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,

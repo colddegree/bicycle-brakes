@@ -41,7 +41,6 @@ const Root = ({ malfunctions }) => {
         return type.name.toLowerCase();
     };
 
-    // TODO
     const createValuesEditor = feature => {
         switch (feature.type) {
             case types.SCALAR.id:
@@ -58,6 +57,8 @@ const Root = ({ malfunctions }) => {
                     <IntValuesEditor
                         actionText={'Введите значения признаков выбранной неисправности:'}
                         featureId={feature.id}
+                        fieldPathPrefix={`malfunctions[${selectedMalfunction.id}][features][int][${selectedFeature.id}]`}
+                        pathRegex={/^malfunctions\[-?\d+]\[features]\[int]\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/}
                         possibleValueDomain={feature.possibleValueDomain}
                         values={feature.values}
                     />

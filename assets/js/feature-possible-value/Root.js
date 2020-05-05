@@ -121,6 +121,7 @@ const Root = props => {
                 return (
                     <IntValues
                         featureId={feature.id}
+                        fieldPathPrefix={`values[${feature.id}]`}
                         values={feature.possibleValues}
                         onChange={intHandlers.onChange}
                         onDelete={intHandlers.onDelete}
