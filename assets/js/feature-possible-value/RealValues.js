@@ -43,17 +43,19 @@ const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
 
         {values.map(v => (
             <React.Fragment key={`${featureId}-${v.id}`}>
-                Нижняя граница:{' '}
-                <input
-                    type="number"
-                    name={`values[${featureId}][${v.id}][lower]`}
-                    value={Number(v.lower).toFixed(2)}
-                    onChange={event => { onChange(event); onChangeDecorated(v.id); }}
-                    min={REAL_MIN}
-                    max={REAL_MAX}
-                    step={0.01}
-                    required={true}
-                />{' '}
+                <label>
+                    Нижняя граница:{' '}
+                    <input
+                        type="number"
+                        name={`values[${featureId}][${v.id}][lower]`}
+                        value={Number(v.lower).toFixed(2)}
+                        onChange={event => { onChange(event); onChangeDecorated(v.id); }}
+                        min={REAL_MIN}
+                        max={REAL_MAX}
+                        step={0.01}
+                        required={true}
+                    />
+                </label>{' '}
                 <label>
                     <input
                         type="checkbox"
@@ -65,17 +67,19 @@ const RealValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
                 </label>
                 <br />
 
-                Верхняя граница:{' '}
-                <input
-                    type="number"
-                    name={`values[${featureId}][${v.id}][upper]`}
-                    value={Number(v.upper).toFixed(2)}
-                    onChange={event => { onChange(event); onChangeDecorated(v.id); }}
-                    min={REAL_MIN}
-                    max={REAL_MAX}
-                    step={0.01}
-                    required={true}
-                />{' '}
+                <label>
+                    Верхняя граница:{' '}
+                    <input
+                        type="number"
+                        name={`values[${featureId}][${v.id}][upper]`}
+                        value={Number(v.upper).toFixed(2)}
+                        onChange={event => { onChange(event); onChangeDecorated(v.id); }}
+                        min={REAL_MIN}
+                        max={REAL_MAX}
+                        step={0.01}
+                        required={true}
+                    />
+                </label>{' '}
                 <label>
                     <input
                         type="checkbox"

@@ -41,29 +41,34 @@ const IntValues = ({ featureId, values, onChange, onDelete, onAdd }) => {
 
         {values.map(v => (
             <React.Fragment key={`${featureId}-${v.id}`}>
-                Нижняя граница:{' '}
-                <input
-                    type="number"
-                    name={`values[${featureId}][${v.id}][lower]`}
-                    value={v.lower}
-                    onChange={event => { onChange(event); onChangeDecorated(v.id); }}
-                    min={INT_MIN}
-                    max={INT_MAX}
-                    required={true}
-                />
+                <label>
+                    Нижняя граница:{' '}
+                    <input
+                        type="number"
+                        name={`values[${featureId}][${v.id}][lower]`}
+                        value={v.lower}
+                        onChange={event => { onChange(event); onChangeDecorated(v.id); }}
+                        min={INT_MIN}
+                        max={INT_MAX}
+                        required={true}
+                    />
+                </label>
                 <br />
 
-                Верхняя граница:{' '}
-                <input
-                    type="number"
-                    name={`values[${featureId}][${v.id}][upper]`}
-                    value={v.upper}
-                    onChange={event => { onChange(event); onChangeDecorated(v.id); }}
-                    min={INT_MIN}
-                    max={INT_MAX}
-                    required={true}
-                />
+                <label>
+                    Верхняя граница:{' '}
+                    <input
+                        type="number"
+                        name={`values[${featureId}][${v.id}][upper]`}
+                        value={v.upper}
+                        onChange={event => { onChange(event); onChangeDecorated(v.id); }}
+                        min={INT_MIN}
+                        max={INT_MAX}
+                        required={true}
+                    />
+                </label>
                 <br />
+                
                 <button onClick={event => { event.preventDefault(); onDeleteDecorated(featureId, v.id) }}>
                     Удалить
                 </button>
