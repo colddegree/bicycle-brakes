@@ -241,12 +241,8 @@ class MalfunctionFeatureValueBindController extends AbstractController
 
                 $featureItem = $feature->toArray();
                 $featureItem['values'] = $values;
-                if (!empty($possibleScalarValues)) {
-                    $featureItem['possibleScalarValues'] = $possibleScalarValues;
-                }
-                if (!empty($possibleValueDomain)) {
-                    $featureItem['possibleValueDomain'] = $possibleValueDomain;
-                }
+                $featureItem['possibleScalarValues'] = $possibleScalarValues ?? [];
+                $featureItem['possibleValueDomain'] = $possibleValueDomain;
 
                 $malfunctionItem['features'][] = $featureItem;
             }
