@@ -96,6 +96,7 @@ class ClinicalPictureController extends AbstractController
             $item = [
                 'id' => $malfunction->id,
                 'name' => $malfunction->name,
+                'selectedFeatureIds' => [],
             ];
 
             /** @var Feature[] $selectedFeatures */

@@ -11,6 +11,10 @@ const FeaturePicker = ({ malfunctionId, selectedFeatureIds, allFeatures }) => {
     ));
     const [updatedIds, setUpdatedIds] = useState(new Set());
 
+    if (allFeatures.length < 1) {
+        return 'Нет признаков';
+    }
+
     const onChange = (featureId, checked) => {
         setCheckedIdsMap(prevState => {
             return {
