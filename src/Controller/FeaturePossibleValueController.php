@@ -44,7 +44,7 @@ class FeaturePossibleValueController extends AbstractController
     }
 
     /**
-     * @Route("/feature-possible-values")
+     * @Route("/возможные-значения-признаков", name="возможные-значения-признаков")
      */
     public function index(Request $request): Response
     {

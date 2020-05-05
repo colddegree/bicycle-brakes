@@ -57,7 +57,7 @@ class FeatureNormalValueController extends AbstractController
     }
 
     /**
-     * @Route("/feature-normal-values")
+     * @Route("/нормальные-значения-признаков", name="нормальные-значения-признаков")
      */
     public function index(Request $request): Response
     {

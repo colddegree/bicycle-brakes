@@ -48,7 +48,7 @@ class MalfunctionFeatureValueBindController extends AbstractController
     }
 
     /**
-     * @Route("/malfunction-feature-value")
+     * @Route("/значения-признаков-неисправностей", name="значения-признаков-неисправностей")
      */
     public function index(Request $request): Response
     {

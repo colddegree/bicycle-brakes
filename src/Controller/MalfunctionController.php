@@ -24,7 +24,7 @@ class MalfunctionController extends AbstractController
     }
 
     /**
-     * @Route("/malfunction")
+     * @Route("/неисправности", name="неисправности")
      */
     public function index(Request $request): Response
     {

@@ -27,7 +27,7 @@ class ClinicalPictureController extends AbstractController
     }
 
     /**
-     * @Route("/clinical-pictures")
+     * @Route("/клинические-картины", name="клинические-картины")
      */
     public function index(Request $request): Response
     {

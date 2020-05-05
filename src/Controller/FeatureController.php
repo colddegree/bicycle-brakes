@@ -24,7 +24,7 @@ class FeatureController extends AbstractController
     }
 
     /**
-     * @Route("/feature", name="feature")
+     * @Route("/признаки", name="признаки")
      */
     public function index(Request $request): Response
     {
