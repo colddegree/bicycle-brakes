@@ -24,7 +24,7 @@ class ScalarValueFixture extends Fixture
         ],
         [
             'name' => 'Отсутствие трения',
-            '_ref' => 'scalar_Отсутствие трения',
+            '_ref' => 'scalar_1_Отсутствие трения',
         ],
         [
             'name' => 'Да',
@@ -52,39 +52,11 @@ class ScalarValueFixture extends Fixture
         ],
         [
             'name' => 'Чёткий, ярко выраженный',
-            '_ref' => 'scalar_Чёткий, ярко выраженный',
+            '_ref' => 'scalar_1_Чёткий, ярко выраженный',
         ],
         [
             'name' => 'Плавный',
             '_ref' => 'scalar_1_Плавный',
-        ],
-        [
-            'name' => 'Да',
-            '_ref' => 'scalar_4_Да',
-        ],
-        [
-            'name' => 'Плавный',
-            '_ref' => 'scalar_2_Плавный',
-        ],
-        [
-            'name' => 'Прерывистый',
-            '_ref' => 'scalar_2_Прерывистый',
-        ],
-        [
-            'name' => 'Нет',
-            '_ref' => 'scalar_4_Нет',
-        ],
-        [
-            'name' => 'Да',
-            '_ref' => 'scalar_5_Да',
-        ],
-        [
-            'name' => 'Постоянный',
-            '_ref' => 'scalar_2_Постоянный',
-        ],
-        [
-            'name' => 'Нет',
-            '_ref' => 'scalar_5_Нет',
         ],
     ];
 

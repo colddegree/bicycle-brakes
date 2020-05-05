@@ -22,7 +22,7 @@ class MalfunctionFeatureValueBindFixture extends Fixture implements DependentFix
             'malfunction' => 'malfunction_Загрязнение колодок маслом',
             'feature' => 'feature_Наличие скрипа при торможении',
             'values' => [
-                'scalar_4_Да',
+                'scalar_1_Да',
             ],
         ],
         [
@@ -53,7 +53,7 @@ class MalfunctionFeatureValueBindFixture extends Fixture implements DependentFix
             'malfunction' => 'malfunction_Завоздушивание гидролинии',
             'feature' => 'feature_Характер упора при зажатии ручки тормоза',
             'values' => [
-                'scalar_2_Плавный',
+                'scalar_1_Плавный',
             ],
         ],
         [
@@ -132,14 +132,14 @@ class MalfunctionFeatureValueBindFixture extends Fixture implements DependentFix
             'malfunction' => 'malfunction_Деформация ротора',
             'feature' => 'feature_Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
             'values' => [
-                'scalar_2_Прерывистый',
+                'scalar_1_Прерывистый',
             ],
         ],
         [
             'malfunction' => 'malfunction_Деформация ротора',
             'feature' => 'feature_Равноудалённость колодок от ротора',
             'values' => [
-                'scalar_4_Нет',
+                'scalar_3_Нет',
             ],
         ],
         [
@@ -170,7 +170,7 @@ class MalfunctionFeatureValueBindFixture extends Fixture implements DependentFix
             'malfunction' => 'malfunction_Износ ротора',
             'feature' => 'feature_Меньше ли толщина ротора допустимой для него толщины',
             'values' => [
-                'scalar_5_Да',
+                'scalar_2_Да',
             ],
         ],
         [
@@ -201,14 +201,14 @@ class MalfunctionFeatureValueBindFixture extends Fixture implements DependentFix
             'malfunction' => 'malfunction_Смещение калипера от плоскости ротора',
             'feature' => 'feature_Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
             'values' => [
-                'scalar_2_Постоянный',
+                'scalar_1_Постоянный',
             ],
         ],
         [
             'malfunction' => 'malfunction_Смещение калипера от плоскости ротора',
             'feature' => 'feature_Равноудалённость колодок от ротора',
             'values' => [
-                'scalar_5_Нет',
+                'scalar_3_Нет',
             ],
         ],
         // TODO: remove

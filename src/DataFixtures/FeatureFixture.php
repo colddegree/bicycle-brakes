@@ -45,10 +45,10 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 'scalar_1_Постоянный',
                 'scalar_1_Прерывистый',
-                'scalar_Отсутствие трения',
+                'scalar_1_Отсутствие трения',
             ],
             'normalValues' => [
-                'scalar_Отсутствие трения',
+                'scalar_1_Отсутствие трения',
             ],
             '_ref' => 'feature_Характер трения колодок о ротор при вращении колеса с тормозной ручкой в состоянии покоя',
         ],
@@ -231,7 +231,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
                 'scalar_3_Нет',
             ],
             'normalValues' => [
-                'scalar_3_Нет',
+                'scalar_3_Да',
             ],
             '_ref' => 'feature_Равноудалённость колодок от ротора',
         ],
@@ -239,11 +239,11 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'name' => 'Характер упора при зажатии ручки тормоза',
             'type' => Feature::TYPE_SCALAR,
             'possibleValues' => [
-                'scalar_Чёткий, ярко выраженный',
+                'scalar_1_Чёткий, ярко выраженный',
                 'scalar_1_Плавный',
             ],
             'normalValues' => [
-                'scalar_Чёткий, ярко выраженный',
+                'scalar_1_Чёткий, ярко выраженный',
             ],
             '_ref' => 'feature_Характер упора при зажатии ручки тормоза',
         ],
