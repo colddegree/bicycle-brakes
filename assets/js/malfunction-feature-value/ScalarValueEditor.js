@@ -35,7 +35,7 @@ const ScalarValuesEditor = ({ malfunctionId, featureId, possibleValues, values }
                 />
                 <input
                     type="hidden"
-                    name={`malfunctions[${malfunctionId}][scalarFeatures][${featureId}][id]`}
+                    name={`malfunctions[${malfunctionId}][features][scalar][${featureId}][id]`}
                     value={featureId}
                 />
             </>
@@ -47,7 +47,7 @@ const ScalarValuesEditor = ({ malfunctionId, featureId, possibleValues, values }
                     <>
                         <input
                             type="hidden"
-                            name={`malfunctions[${malfunctionId}][scalarFeatures][${featureId}][selectedIds][]`}
+                            name={`malfunctions[${malfunctionId}][features][scalar][${featureId}][selectedIds][]`}
                             value={v.id}
                         />
                     </>
@@ -69,7 +69,7 @@ const ScalarValuesEditor = ({ malfunctionId, featureId, possibleValues, values }
             <input
                 key={id}
                 type="hidden"
-                name={`malfunctions[${malfunctionId}][scalarFeatures][${featureId}][updatedIds][]`}
+                name={`malfunctions[${malfunctionId}][features][scalar][${featureId}][updatedIds][]`}
                 value={id}
             />
         ))}

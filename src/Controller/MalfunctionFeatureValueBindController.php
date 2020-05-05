@@ -62,12 +62,12 @@ class MalfunctionFeatureValueBindController extends AbstractController
     {
         // TODO: добавить валидацию
 
-        $this->handleScalarValues($request);
-        $this->handleIntAndRealValues($request);
+        $this->persistScalarValues($request);
+        $this->persistIntAndRealValues($request);
         $this->entityManager->flush();
     }
 
-    private function handleScalarValues(Request $request): void
+    private function persistScalarValues(Request $request): void
     {
         $malfunctions = $request->request->get('malfunctions', []);
 
@@ -79,7 +79,7 @@ class MalfunctionFeatureValueBindController extends AbstractController
             /** @var Malfunction $malfunction */
             $malfunction = $this->malfunctionRepository->find((int)$m['id']);
 
-            foreach ($m['scalarFeatures'] as $f) {
+            foreach ($m['features']['scalar'] as $f) {
                 /** @var Feature $feature */
                 $feature = $this->featureRepository->find((int)$f['id']);
 
@@ -110,7 +110,7 @@ class MalfunctionFeatureValueBindController extends AbstractController
         }
     }
 
-    private function handleIntAndRealValues(Request $request): void
+    private function persistIntAndRealValues(Request $request): void
     {
         // TODO
     }
