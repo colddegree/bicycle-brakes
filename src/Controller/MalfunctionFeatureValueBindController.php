@@ -6,14 +6,17 @@ namespace App\Controller;
 
 use App\Entity\Feature;
 use App\Entity\FeaturePossibleValue;
+use App\Entity\IntValue;
 use App\Entity\Malfunction;
 use App\Entity\MalfunctionFeatureValueBind;
+use App\Entity\RealValue;
 use App\Entity\ScalarValue;
 use App\IntervalMerger;
 use App\Mapper\IntIntervalsToStringMapper;
 use App\Mapper\RealIntervalsToStringMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,57 +65,151 @@ class MalfunctionFeatureValueBindController extends AbstractController
     {
         // TODO: добавить валидацию
 
-        $this->persistScalarValues($request);
-        $this->persistIntAndRealValues($request);
-        $this->entityManager->flush();
-    }
-
-    private function persistScalarValues(Request $request): void
-    {
         $malfunctions = $request->request->get('malfunctions', []);
 
         if (empty($malfunctions)) {
             return;
         }
 
-        foreach ($malfunctions as $m) {
+        foreach ($malfunctions as $mId => $m) {
+            if (empty($m['features'])) {
+                continue;
+            }
+
+            $mId = (int)$mId;
+
             /** @var Malfunction $malfunction */
-            $malfunction = $this->malfunctionRepository->find((int)$m['id']);
+            $malfunction = $this->malfunctionRepository->find($mId);
 
-            foreach ($m['features']['scalar'] as $f) {
-                /** @var Feature $feature */
-                $feature = $this->featureRepository->find((int)$f['id']);
+            foreach ($m['features'] as $featureType => $featureIdToValueDataMap) {
+                foreach ($featureIdToValueDataMap as $featureId => $valueData) {
+                    /** @var Feature $feature */
+                    $feature = $this->featureRepository->find((int)$featureId);
 
-                /** @var MalfunctionFeatureValueBind $bind */
-                $bind = current($this->malfunctionFeatureValueBindRepository->findBy([
-                    'malfunction' => $malfunction,
-                    'feature' => $feature,
-                ]));
+                    /** @var MalfunctionFeatureValueBind $bind */
+                    $bind = current($this->malfunctionFeatureValueBindRepository->findBy([
+                        'malfunction' => $malfunction,
+                        'feature' => $feature,
+                    ]));
 
-                $checkedIds = array_map('\intval', $f['selectedIds']);
-
-                foreach ($f['updatedIds'] as $id) {
-                    $id = (int)$id;
-                    if (in_array($id, $checkedIds, true)) {
-                        $scalarValueToAdd = $feature->possibleValues
-                            ->filter(static fn (FeaturePossibleValue $fpv) => $fpv->scalarValue->id === $id)
-                            ->first()
-                            ->scalarValue;
-                        $bind->scalarValues->add($scalarValueToAdd);
-                    } else {
-                        $scalarValueToRemove = $bind->scalarValues
-                            ->filter(static fn(ScalarValue $v) => $v->id === $id)
-                            ->first();
-                        $bind->scalarValues->removeElement($scalarValueToRemove);
+                    switch ($featureType) {
+                        case 'scalar':
+                            $this->persistScalarValues($valueData, $feature, $bind);
+                            break;
+                        case 'int':
+                            $this->persistIntValues($valueData, $bind);
+                            break;
+                        case 'real':
+                            $this->persistRealValues($valueData, $bind);
+                            break;
+                        default:
+                            throw new RuntimeException(sprintf('Unsupported feature type "%s" in data', $featureType));
                     }
                 }
             }
         }
+
+        $this->entityManager->flush();
     }
 
-    private function persistIntAndRealValues(Request $request): void
+    private function persistScalarValues(array $valueData, Feature $feature, MalfunctionFeatureValueBind $bind): void
     {
-        // TODO
+        $checkedIds = array_map('\intval', $valueData['selectedIds'] ?? []);
+
+        foreach ($valueData['updatedIds'] as $id) {
+            $id = (int)$id;
+            if (in_array($id, $checkedIds, true)) {
+                $scalarValueToAdd = $feature->possibleValues
+                    ->filter(static fn (FeaturePossibleValue $fpv) => $fpv->scalarValue->id === $id)
+                    ->first()
+                    ->scalarValue;
+                $bind->scalarValues->add($scalarValueToAdd);
+            } else {
+                $scalarValueToRemove = $bind->scalarValues
+                    ->filter(static fn(ScalarValue $v) => $v->id === $id)
+                    ->first();
+                $bind->scalarValues->removeElement($scalarValueToRemove);
+            }
+        }
+    }
+
+    private function persistIntValues(array $valueData, MalfunctionFeatureValueBind $bind): void
+    {
+        $updatedIds = [];
+        if (!empty($valueData['updatedIds'])) {
+            $updatedIds = array_map('\intval', explode(',', $valueData['updatedIds']));
+        }
+        $deletedIds = [];
+        if (!empty($valueData['deletedIds'])) {
+            $deletedIds = array_map('\intval', explode(',', $valueData['deletedIds']));
+        }
+        unset($valueData['updatedIds'], $valueData['deletedIds']);
+
+        foreach ($valueData as $id => $data) {
+            $id = (int)$id;
+
+            if ($id <= 0) {
+                // create
+                $bind->intValues->add(new IntValue((int)$data['lower'], (int)$data['upper']));
+            } elseif (in_array($id, $updatedIds, true)) {
+                // update
+                /** @var IntValue $intValue */
+                $intValue = $bind->intValues->filter(static fn (IntValue $v) => $v->id === $id)->first();
+                $intValue->lower = (int)$data['lower'];
+                $intValue->upper = (int)$data['upper'];
+            }
+        }
+
+        // delete
+        foreach ($deletedIds as $id) {
+            /** @var IntValue $intValue */
+            $intValue = $bind->intValues->filter(static fn (IntValue $v) => $v->id === $id)->first();
+            $bind->intValues->removeElement($intValue);
+        }
+    }
+
+    private function persistRealValues(array $valueData, MalfunctionFeatureValueBind $bind): void
+    {
+        // копипаста persistIntValues)))))00
+
+        $updatedIds = [];
+        if (!empty($valueData['updatedIds'])) {
+            $updatedIds = array_map('\intval', explode(',', $valueData['updatedIds']));
+        }
+        $deletedIds = [];
+        if (!empty($valueData['deletedIds'])) {
+            $deletedIds = array_map('\intval', explode(',', $valueData['deletedIds']));
+        }
+        unset($valueData['updatedIds'], $valueData['deletedIds']);
+
+        foreach ($valueData as $id => $data) {
+            $id = (int)$id;
+
+            if ($id <= 0) {
+                // create
+                $bind->realValues->add(new RealValue(
+                    (float)$data['lower'],
+                    !empty($data['lowerIsInclusive']),
+                    (float)$data['upper'],
+                    !empty($data['upperIsInclusive']),
+                ));
+            } elseif (in_array($id, $updatedIds, true)) {
+                // update
+                /** @var RealValue $realValue */
+                $realValue = $bind->realValues->filter(static fn (RealValue $v) => $v->id === $id)->first();
+                $realValue->lower = (float)$data['lower'];
+                $realValue->lowerIsInclusive = !empty($data['lowerIsInclusive']);
+                $realValue->upper = (float)$data['upper'];
+                $realValue->upperIsInclusive = !empty($data['upperIsInclusive']);
+            }
+        }
+
+        // delete
+        foreach ($deletedIds as $id) {
+            /** @var IntValue $realValue */
+            $realValue = $bind->realValues->filter(static fn (RealValue $v) => $v->id === $id)->first();
+            $bind->realValues->removeElement($realValue);
+        }
     }
 
     private function getData(): array

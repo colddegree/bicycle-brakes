@@ -41,12 +41,12 @@ const Root = ({ malfunctions }) => {
         return type.name.toLowerCase();
     };
 
-    const createValuesEditor = feature => {
+    const createValuesEditor = (malfunction, feature) => {
         switch (feature.type) {
             case types.SCALAR.id:
                 return (
                     <ScalarValuesEditor
-                        malfunctionId={selectedMalfunction.id}
+                        malfunctionId={malfunction.id}
                         featureId={feature.id}
                         possibleValues={feature.possibleScalarValues}
                         values={feature.values}
@@ -57,7 +57,7 @@ const Root = ({ malfunctions }) => {
                     <IntValuesEditor
                         actionText={'Введите значения признаков выбранной неисправности:'}
                         featureId={feature.id}
-                        fieldPathPrefix={`malfunctions[${selectedMalfunction.id}][features][int][${selectedFeature.id}]`}
+                        fieldPathPrefix={`malfunctions[${malfunction.id}][features][int][${feature.id}]`}
                         pathRegex={/^malfunctions\[-?\d+]\[features]\[int]\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/}
                         possibleValueDomain={feature.possibleValueDomain}
                         values={feature.values}
@@ -68,7 +68,7 @@ const Root = ({ malfunctions }) => {
                     <RealValuesEditor
                         actionText={'Введите значения признаков выбранной неисправности:'}
                         featureId={feature.id}
-                        fieldPathPrefix={`malfunctions[${selectedMalfunction.id}][features][real][${selectedFeature.id}]`}
+                        fieldPathPrefix={`malfunctions[${malfunction.id}][features][real][${feature.id}]`}
                         pathRegex={/^malfunctions\[-?\d+]\[features]\[real]\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/}
                         possibleValueDomain={feature.possibleValueDomain}
                         values={feature.values}
@@ -118,7 +118,7 @@ const Root = ({ malfunctions }) => {
                             <p>Значения</p>
                             {m.features.map(f => (
                                 <div key={f.id} hidden={f.id !== selectedFeature.id}>
-                                    {createValuesEditor(f)}
+                                    {createValuesEditor(m, f)}
                                     <br />
                                 </div>
                             ))}
