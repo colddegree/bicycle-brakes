@@ -156,6 +156,22 @@ class IntervalMergerTest extends TestCase
             ],
         ];
 
+        yield 'конец первого интервала касается начала второго интервала и только первый включительный' => [
+            [
+                new RealValue(1, true, 2, true),
+                new RealValue(2, false,3, true),
+            ],
+            [new RealValue(1, true, 3, true)],
+        ];
+
+        yield 'конец первого интервала касается начала второго интервала и только второй включительный' => [
+            [
+                new RealValue(1, true, 2, false),
+                new RealValue(2, true,3, true),
+            ],
+            [new RealValue(1, true, 3, true)],
+        ];
+
         yield 'первый невключительный интервал вложен во второй включительный' => [
             [
                 new RealValue(2, false, 3, false),

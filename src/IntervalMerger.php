@@ -65,7 +65,13 @@ class IntervalMerger
             /** @var RealValue $topInterval */
             $topInterval = $stack->top();
 
-            if ($topInterval->upper > $int->lower) {
+            if ($topInterval->upperIsInclusive || $int->lowerIsInclusive) {
+                $intersects = $topInterval->upper >= $int->lower;
+            } else {
+                $intersects = $topInterval->upper > $int->lower;
+            }
+
+            if ($intersects) {
                 $stack->pop();
                 $stack->push(new RealValue(
                     $topInterval->lower,
