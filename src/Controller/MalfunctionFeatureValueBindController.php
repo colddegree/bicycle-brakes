@@ -17,12 +17,11 @@ use App\Mapper\RealIntervalsToStringMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use RuntimeException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MalfunctionFeatureValueBindController extends AbstractController
+class MalfunctionFeatureValueBindController extends AbstractReactController
 {
     private EntityManagerInterface $entityManager;
     private ObjectRepository $malfunctionRepository;
@@ -56,9 +55,13 @@ class MalfunctionFeatureValueBindController extends AbstractController
             $this->handlePost($request);
         }
 
-        return $this->render('malfunction_feature_value_bind/index.html.twig', [
-            'data' => json_encode($this->getData(),  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
-        ]);
+        $name = 'Значения признаков неисправностей';
+        return $this->renderPageWithReact(
+            $name,
+            $name,
+            $this->getData(),
+            'malfunction-feature-value',
+        );
     }
 
     private function handlePost(Request $request): void

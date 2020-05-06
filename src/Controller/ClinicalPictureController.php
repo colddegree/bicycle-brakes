@@ -8,12 +8,11 @@ use App\Entity\Feature;
 use App\Entity\Malfunction;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ClinicalPictureController extends AbstractController
+class ClinicalPictureController extends AbstractReactController
 {
     private EntityManagerInterface $entityManager;
     private ObjectRepository $malfunctionRepository;
@@ -32,13 +31,16 @@ class ClinicalPictureController extends AbstractController
     public function index(Request $request): Response
     {
         if ($request->isMethod(Request::METHOD_POST)) {
-            dump($request->request->all());//TODO
             $this->handlePost($request);
         }
 
-        return $this->render('clinical_picture/index.html.twig', [
-            'data' => json_encode($this->getData(),  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
-        ]);
+        $name = 'Клинические картины';
+        return $this->renderPageWithReact(
+            $name,
+            $name,
+            $this->getData(),
+            'clinical-picture',
+        );
     }
 
     private function handlePost(Request $request): void

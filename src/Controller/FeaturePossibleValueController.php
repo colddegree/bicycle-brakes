@@ -17,12 +17,11 @@ use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use RuntimeException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FeaturePossibleValueController extends AbstractController
+class FeaturePossibleValueController extends AbstractReactController
 {
     private EntityManagerInterface $entityManager;
     private ObjectRepository $featureRepository;
@@ -52,9 +51,13 @@ class FeaturePossibleValueController extends AbstractController
             $this->handlePost($request);
         }
 
-        return $this->render('feature_possible_value/index.html.twig', [
-            'data' => json_encode($this->getData(),  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
-        ]);
+        $name = 'Возможные значения признаков';
+        return $this->renderPageWithReact(
+            $name,
+            $name,
+            $this->getData(),
+            'feature-possible-value',
+        );
     }
 
     private function handlePost(Request $request): void

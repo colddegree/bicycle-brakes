@@ -7,12 +7,11 @@ namespace App\Controller;
 use App\Entity\Malfunction;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MalfunctionController extends AbstractController
+class MalfunctionController extends AbstractReactController
 {
     private EntityManagerInterface $entityManager;
     private ObjectRepository $malfunctionRepository;
@@ -43,9 +42,13 @@ class MalfunctionController extends AbstractController
             ];
         }
 
-        return $this->render('malfunction/index.html.twig', [
-            'data' => json_encode($data,  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
-        ]);
+        $name = 'Неисправности';
+        return $this->renderPageWithReact(
+            $name,
+            $name,
+            $data,
+            'malfunction',
+        );
     }
 
     private function handlePost(Request $request): void
