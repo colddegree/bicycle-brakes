@@ -48,7 +48,7 @@ const FeaturePicker = ({ malfunctionId, selectedFeatureIds, allFeatures }) => {
                         checked={checkedIdsMap[f.id]}
                         onChange={event => onChange(f.id, event.target.checked)}
                     />{' '}
-                    {f.name}
+                    {f.name} (#{f.id})
                 </label>
                 <br />
             </React.Fragment>
