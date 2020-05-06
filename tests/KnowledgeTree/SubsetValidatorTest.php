@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\KnowledgeTree;
 
 use App\Entity\IntValue;
+use App\Entity\RealValue;
 use App\IntervalMerger;
 use App\KnowledgeTree\SubsetValidator;
 use Generator;
@@ -114,6 +115,117 @@ class SubsetValidatorTest extends TestCase
             [
                 new IntValue(1, 2),
                 new IntValue(3, 7),
+            ],
+            false,
+        ];
+    }
+
+    /**
+     * @dataProvider realTestCases
+     *
+     * @param RealValue[] $as
+     * @param RealValue[] $bs
+     * @param bool $expected
+     */
+    public function testReal(array $as, array $bs, bool $expected): void
+    {
+        $validator = new SubsetValidator(new IntervalMerger());
+
+        $actual = $validator->checkAsAreSubsetOfBsReal($as, $bs);
+
+        self::assertSame($expected, $actual);
+    }
+
+    public function realTestCases(): Generator
+    {
+        yield [
+            [new RealValue(-1, true, 1, true)],
+            [new RealValue(-1, true, 1, true)],
+            true,
+        ];
+
+        yield [
+            [new RealValue(-1, true, 1, true)],
+            [new RealValue(-1, false, 1, true)],
+            false,
+        ];
+
+        yield [
+            [new RealValue(-1, false, 1, true)],
+            [new RealValue(-1, true, 1, true)],
+            true,
+        ];
+
+        yield [
+            [new RealValue(-1, true, 1, true)],
+            [new RealValue(-1, false, 1, false)],
+            false,
+        ];
+
+        yield [
+            [new RealValue(-1, true, 1, false)],
+            [new RealValue(-1, true, 1, true)],
+            true,
+        ];
+
+        yield [
+            [
+                new RealValue(-1, true, 2, true),
+                new RealValue(6, true, 7, true),
+                new RealValue(9, true, 124, true),
+            ],
+            [
+                new RealValue(-1000, true, 1000, true),
+            ],
+            true,
+        ];
+
+        yield 'множество пустых интервалов является подмножеством пустых интервалов' => [
+            [],
+            [],
+            true,
+        ];
+
+        yield 'a () вписывается в b, разбитый на 2 касающихся интервала (] и [)' => [
+            [
+                new RealValue(1, false, 7, false),
+            ],
+            [
+                new RealValue(1, false, 3, true),
+                new RealValue(3, true, 7, false),
+            ],
+            true,
+        ];
+
+        yield 'a () вписывается в b, разбитый на 2 касающихся интервала () и [)' => [
+            [
+                new RealValue(1, false, 7, false),
+            ],
+            [
+                new RealValue(1, false, 3, false),
+                new RealValue(3, true, 7, false),
+            ],
+            true,
+        ];
+
+        yield 'a () вписывается в b, разбитый на 2 касающихся интервала (] и ()' => [
+            [
+                new RealValue(1, false, 7, false),
+            ],
+            [
+                new RealValue(1, false, 3, true),
+                new RealValue(3, false, 7, false),
+            ],
+            true,
+        ];
+
+        yield 'a () не вписывается в b, так как b разбит на 2 некасающихся интервала () и ()' => [
+            [
+                new RealValue(1, false, 7, false),
+            ],
+            [
+                new RealValue(1, false, 3, false),
+                new RealValue(3, false, 7, false),
             ],
             false,
         ];
