@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\KnowledgeTree;
 
 use App\Entity\IntValue;
+use App\Entity\RealValue;
 use App\KnowledgeTree\IntersectValidator;
 use Generator;
 use PHPUnit\Framework\TestCase;
@@ -102,6 +103,147 @@ class IntersectValidatorTest extends TestCase
                 new IntValue(3, 3),
             ],
             false,
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider realTestCases
+     *
+     * @param RealValue[] $as
+     * @param RealValue[] $bs
+     * @param bool $expected
+     */
+    public function real(array $as, array $bs, bool $expected): void
+    {
+        $validator = new IntersectValidator();
+
+        $actual = $validator->checkAsIntersectsWithBsReal($as, $bs);
+
+        self::assertSame($expected, $actual);
+    }
+
+    public function realTestCases(): Generator
+    {
+        yield 'пересекается' => [
+            [
+                new RealValue(0, true, 1, true),
+            ],
+            [
+                new RealValue(1, true, 2, true),
+            ],
+            true,
+        ];
+
+        yield 'не пересекается' => [
+            [
+                new RealValue(0, true, 1, false),
+            ],
+            [
+                new RealValue(1, true, 2, true),
+            ],
+            false,
+        ];
+
+        yield [
+            [
+                new RealValue(0, true, 1, true),
+            ],
+            [
+                new RealValue(1, false, 2, true),
+            ],
+            false,
+        ];
+
+        yield [
+            [
+                new RealValue(0, true, 1, false),
+            ],
+            [
+                new RealValue(1, false, 2, true),
+            ],
+            false,
+        ];
+
+        // те же 4 кейса, но в другом порядке
+
+        yield [
+            [
+                new RealValue(1, true, 2, true),
+            ],
+            [
+                new RealValue(0, true, 1, true),
+            ],
+            true,
+        ];
+
+        yield [
+            [
+                new RealValue(1, true, 2, true),
+            ],
+            [
+                new RealValue(0, true, 1, false),
+            ],
+            false,
+        ];
+
+        yield [
+            [
+                new RealValue(1, false, 2, true),
+            ],
+            [
+                new RealValue(0, true, 1, true),
+            ],
+            false,
+        ];
+
+        yield [
+            [
+                new RealValue(1, false, 2, true),
+            ],
+            [
+                new RealValue(0, true, 1, false),
+            ],
+            false,
+        ];
+
+
+        // кейсы с несколькими интервалами
+
+        yield [
+            [
+                new RealValue(1, false, 2, false),
+                new RealValue(3, false, 4, false),
+            ],
+            [
+                new RealValue(2, true, 3, true),
+                new RealValue(4, true, 5, true),
+            ],
+            false,
+        ];
+
+        yield [
+            [
+                new RealValue(1, false, 2, true),
+                new RealValue(3, false, 4, false),
+            ],
+            [
+                new RealValue(2, true, 3, true),
+                new RealValue(4, true, 5, true),
+            ],
+            true,
+        ];
+
+        yield [
+            [
+                new RealValue(1, false, 2, false),
+                new RealValue(3, true, 4, false),
+            ],
+            [
+                new RealValue(2, true, 3, true),
+                new RealValue(4, true, 5, true),
+            ],
+            true,
         ];
     }
 }
