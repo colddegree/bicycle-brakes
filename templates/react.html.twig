@@ -1,5 +1,12 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {% if withStylesheets %}
+        {{ encore_entry_link_tags(bundleId) }}
+    {% endif %}
+{% endblock %}
+
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}

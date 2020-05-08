@@ -2,10 +2,10 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> {# стили для навигации #}
+        <title>{% block title %}Система, основанная на знаниях{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> {# стили для навигации #}
+        {% endblock %}
     </head>
     <body>
         {% block navigation %}
@@ -22,7 +22,7 @@
                             <li><a class="w3-bar-item w3-button" href="{{ path('значения-признаков-неисправностей') }}">Значения признаков неисправностей</a></li>
                         </ul>
                     </li>
-                    <li>Дерево знаний (WIP)</li>
+                    <li><a class="w3-bar-item w3-button" href="{{ path('дерево-знаний') }}">Дерево знаний</a></li>
                     <li>Решатель задач (WIP)</li>
                 </ul>
             </div>

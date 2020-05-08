@@ -9,13 +9,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractReactController extends AbstractController
 {
-    protected function renderPageWithReact(string $title, string $heading, array $data, string $bundleId): Response
-    {
+    protected function renderPageWithReact(
+        string $title,
+        string $heading,
+        array $data,
+        string $bundleId,
+        bool $withStylesheets = false
+    ): Response {
         return $this->render('react.html.twig', [
             'title' => $title,
             'heading' => $heading,
             'data' => json_encode($data,  JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             'bundleId' => $bundleId,
+            'withStylesheets' => $withStylesheets,
         ]);
     }
 }
