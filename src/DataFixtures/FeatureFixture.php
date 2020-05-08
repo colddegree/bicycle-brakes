@@ -24,7 +24,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lowerIsInclusive' => false,
+                    'lowerIsInclusive' => true,
                     'upper' => RealValue::MAX,
                     'upperIsInclusive' => true,
                 ],
@@ -70,7 +70,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lowerIsInclusive' => false,
+                    'lowerIsInclusive' => true,
                     'upper' => RealValue::MAX,
                     'upperIsInclusive' => true,
                 ],
@@ -91,7 +91,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lowerIsInclusive' => false,
+                    'lowerIsInclusive' => true,
                     'upper' => RealValue::MAX,
                     'upperIsInclusive' => true,
                 ],
@@ -112,7 +112,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lowerIsInclusive' => false,
+                    'lowerIsInclusive' => true,
                     'upper' => RealValue::MAX,
                     'upperIsInclusive' => true,
                 ],
@@ -145,7 +145,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lowerIsInclusive' => false,
+                    'lowerIsInclusive' => true,
                     'upper' => RealValue::MAX,
                     'upperIsInclusive' => true,
                 ],
@@ -166,7 +166,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lowerIsInclusive' => false,
+                    'lowerIsInclusive' => true,
                     'upper' => RealValue::MAX,
                     'upperIsInclusive' => true,
                 ],
@@ -187,7 +187,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lowerIsInclusive' => false,
+                    'lowerIsInclusive' => true,
                     'upper' => RealValue::MAX,
                     'upperIsInclusive' => true,
                 ],
@@ -208,7 +208,7 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             'possibleValues' => [
                 [
                     'lower' => 0,
-                    'lowerIsInclusive' => false,
+                    'lowerIsInclusive' => true,
                     'upper' => RealValue::MAX,
                     'upperIsInclusive' => true,
                 ],
