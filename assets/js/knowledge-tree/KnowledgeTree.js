@@ -36,7 +36,7 @@ const KnowledgeTree = ({ features, malfunctions }) => {
                     key: 'features',
                     icon: !features.reduce((acc, f) => acc = acc && featureIsOk(f), true) ? <Fail /> : <Ok />,
                     children: features.map(f => ({
-                        title: f.name,
+                        title: `${f.name} (#${f.id})`,
                         key: f.id,
                         icon: !featureIsOk(f) ? <Fail /> : <Ok />,
                         children: [
