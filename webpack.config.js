@@ -33,6 +33,7 @@ Encore
     .addEntry('clinical-picture', './assets/js/clinical-picture/index.js')
     .addEntry('malfunction-feature-value', './assets/js/malfunction-feature-value/index.js')
     .addEntry('knowledge-tree', './assets/js/knowledge-tree/index.js')
+    .addEntry('solver', './assets/js/solver/index.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
