@@ -83,14 +83,18 @@ class MalfunctionFeatureValueBind
                     ])->toArray()),
                     $possibleValues,
                     null,
+                    null,
                 ];
 
             case Feature::TYPE_INT:
                 $possibleValues = $this->feature->possibleValues
                     ->map(static fn (FeaturePossibleValue $pv) => $pv->intValue)
                     ->toArray();
-                $mergedIntervals = $intervalMerger->mergeInt($possibleValues);
-                $possibleValueDomainString = $intIntervalsToStringMapper->map($mergedIntervals);
+                $possibleValueDomainString = $intIntervalsToStringMapper->map($intervalMerger->mergeInt($possibleValues));
+                $normalValues = $this->feature->normalValues
+                    ->map(static fn (FeatureNormalValue $nv) => $nv->intValue)
+                    ->toArray();
+                $normalValueDomainString = $intIntervalsToStringMapper->map($intervalMerger->mergeInt($normalValues));
                 return [
                     array_values($this->intValues->map(static fn (IntValue $v) => [
                         'id' => $v->id,
@@ -99,14 +103,18 @@ class MalfunctionFeatureValueBind
                     ])->toArray()),
                     null,
                     $possibleValueDomainString,
+                    $normalValueDomainString,
                 ];
 
             case Feature::TYPE_REAL:
                 $possibleValues = $this->feature->possibleValues
                     ->map(static fn (FeaturePossibleValue $pv) => $pv->realValue)
                     ->toArray();
-                $mergedIntervals = $intervalMerger->mergeReal($possibleValues);
-                $possibleValueDomainString = $realIntervalsToStringMapper->map($mergedIntervals);
+                $possibleValueDomainString = $realIntervalsToStringMapper->map($intervalMerger->mergeReal($possibleValues));
+                $normalValues = $this->feature->normalValues
+                    ->map(static fn (FeatureNormalValue $nv) => $nv->realValue)
+                    ->toArray();
+                $normalValueDomainString = $realIntervalsToStringMapper->map($intervalMerger->mergeReal($normalValues));
                 return [
                     array_values($this->realValues->map(static fn (RealValue $v) => [
                         'id' => $v->id,
@@ -117,6 +125,7 @@ class MalfunctionFeatureValueBind
                     ])->toArray()),
                     null,
                     $possibleValueDomainString,
+                    $normalValueDomainString,
                 ];
 
             default:

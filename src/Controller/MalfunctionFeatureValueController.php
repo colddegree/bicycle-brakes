@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MalfunctionFeatureValueBindController extends AbstractReactController
+class MalfunctionFeatureValueController extends AbstractReactController
 {
     private EntityManagerInterface $entityManager;
     private ObjectRepository $malfunctionRepository;
@@ -238,7 +238,7 @@ class MalfunctionFeatureValueBindController extends AbstractReactController
                     'feature' => $feature,
                 ]));
 
-                [$values, $possibleScalarValues, $possibleValueDomain] = $bind->getValuesAsArray(
+                [$values, $possibleScalarValues, $possibleValueDomain, $normalValueDomain] = $bind->getValuesAsArray(
                     $this->intervalMerger,
                     $this->intIntervalsToStringMapper,
                     $this->realIntervalsToStringMapper,
@@ -248,6 +248,7 @@ class MalfunctionFeatureValueBindController extends AbstractReactController
                 $featureItem['values'] = $values;
                 $featureItem['possibleScalarValues'] = $possibleScalarValues ?? [];
                 $featureItem['possibleValueDomain'] = $possibleValueDomain;
+                $featureItem['normalValueDomain'] = $normalValueDomain;
 
                 $malfunctionItem['features'][] = $featureItem;
             }

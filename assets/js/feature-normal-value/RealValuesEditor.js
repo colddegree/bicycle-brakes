@@ -62,6 +62,9 @@ const RealValuesEditor = props => {
 
     return <>
         <p>Область возможных значений: {possibleValueDomain}</p>
+        {props.normalValueDomain && (
+            <p>Область нормальных значений: {props.normalValueDomain}</p>
+        )}
         <p>{actionText}</p>
 
         <RealValues
@@ -81,6 +84,7 @@ RealValuesEditor.propTypes = {
     fieldPathPrefix: PropTypes.string.isRequired,
     pathRegex: PropTypes.instanceOf(RegExp),
     possibleValueDomain: PropTypes.string.isRequired,
+    normalValueDomain: PropTypes.string,
     values: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         lower: PropTypes.number.isRequired,

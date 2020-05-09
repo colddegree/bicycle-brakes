@@ -60,6 +60,7 @@ const Root = ({ malfunctions }) => {
                         fieldPathPrefix={`malfunctions[${malfunction.id}][features][int][${feature.id}]`}
                         pathRegex={/^malfunctions\[-?\d+]\[features]\[int]\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/}
                         possibleValueDomain={feature.possibleValueDomain}
+                        normalValueDomain={feature.normalValueDomain}
                         values={feature.values}
                     />
                 );
@@ -71,6 +72,7 @@ const Root = ({ malfunctions }) => {
                         fieldPathPrefix={`malfunctions[${malfunction.id}][features][real][${feature.id}]`}
                         pathRegex={/^malfunctions\[-?\d+]\[features]\[real]\[(-?\d+)]\[(-?\d+)]\[(\w+)]$/}
                         possibleValueDomain={feature.possibleValueDomain}
+                        normalValueDomain={feature.normalValueDomain}
                         values={feature.values}
                     />
                 );
@@ -115,7 +117,7 @@ const Root = ({ malfunctions }) => {
 
                             <p>Тип: {getTypeNameByFeature(selectedFeature)}</p>
 
-                            <p>Значения</p>
+                            <p><b>Значения</b></p>
                             {m.features.map(f => (
                                 <div key={f.id} hidden={f.id !== selectedFeature.id}>
                                     {createValuesEditor(m, f)}
@@ -163,6 +165,7 @@ Root.propTypes = {
                 value: PropTypes.string.isRequired,
             })),
             possibleValueDomain: PropTypes.string,
+            normalValueDomain: PropTypes.string,
         })).isRequired,
     })).isRequired,
 };
