@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FeatureReactController extends AbstractReactController
+class FeatureController extends AbstractReactController
 {
     private EntityManagerInterface $entityManager;
     private ObjectRepository $featureRepository;
