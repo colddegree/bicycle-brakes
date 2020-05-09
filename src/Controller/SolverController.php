@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Entity\Feature;
 use App\Entity\FeaturePossibleValue;
+use App\Solver\FeatureDto;
+use App\Solver\Solver;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +17,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class SolverController extends AbstractReactController
 {
     private ObjectRepository $featureRepository;
+    private Solver $solver;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, Solver $solver)
     {
         $this->featureRepository = $entityManager->getRepository(Feature::class);
+        $this->solver = $solver;
     }
 
     /**
@@ -27,7 +31,7 @@ class SolverController extends AbstractReactController
     public function index(Request $request): Response
     {
         if ($request->isMethod(Request::METHOD_POST)) {
-            dump($request->request->all());//TODO
+            $this->handlePost($request);
         }
 
         $name = 'Решатель задач';
@@ -38,6 +42,24 @@ class SolverController extends AbstractReactController
             'solver',
             true,
         );
+    }
+
+    private function handlePost(Request $request): void
+    {
+        // TODO: провалидировать, что пришедшие значения входят в соответствующие возможные значения
+        // если не входит, то вернуть ошибку
+
+        $featureIdToValueMap = $request->request->all();
+
+        dump($featureIdToValueMap); // TODO: remove
+
+        $messages = $this->solver->solve(...array_map(
+            static fn ($k, $v) => new FeatureDto((int)$k, $v),
+            array_keys($featureIdToValueMap),
+            $featureIdToValueMap,
+        ));
+
+        dump($messages); // TODO: прокидывать результат на фронт
     }
 
     private function getData(): array
