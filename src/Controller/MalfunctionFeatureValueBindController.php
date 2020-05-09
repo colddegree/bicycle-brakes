@@ -217,7 +217,9 @@ class MalfunctionFeatureValueBindController extends AbstractReactController
 
     private function getData(): array
     {
-        $result = [];
+        $result = [
+            'malfunctions' => [],
+        ];
 
         /** @var Malfunction[] $malfunctions */
         $malfunctions = $this->malfunctionRepository->findAll();
