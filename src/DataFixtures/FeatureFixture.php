@@ -247,28 +247,6 @@ class FeatureFixture extends Fixture implements DependentFixtureInterface
             ],
             '_ref' => 'feature_Характер упора при зажатии ручки тормоза',
         ],
-        // TODO: remove
-        [
-            'name' => 'Тестовый целочисленный признак',
-            'type' => Feature::TYPE_INT,
-            'possibleValues' => [
-                [
-                    'lower' => -10,
-                    'upper' => 20,
-                ],
-                [
-                    'lower' => 0,
-                    'upper' => 50,
-                ],
-            ],
-            'normalValues' => [
-                [
-                    'lower' => 25,
-                    'upper' => 30,
-                ],
-            ],
-            '_ref' => 'feature_Тестовый целочисленный признак',
-        ],
     ];
 
     /**

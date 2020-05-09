@@ -211,17 +211,6 @@ class MalfunctionFeatureValueBindFixture extends Fixture implements DependentFix
                 'scalar_3_Нет',
             ],
         ],
-        // TODO: remove
-        [
-            'malfunction' => 'malfunction_Тестовая неисправность с целочисленным признаком',
-            'feature' => 'feature_Тестовый целочисленный признак',
-            'values' => [
-                [
-                    'lower' => -10,
-                    'upper' => 24,
-                ],
-            ],
-        ],
     ];
 
     public function load(ObjectManager $manager)

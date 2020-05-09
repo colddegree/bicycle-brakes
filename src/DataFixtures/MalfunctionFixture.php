@@ -80,20 +80,6 @@ class MalfunctionFixture extends Fixture implements DependentFixtureInterface
             ],
             '_ref' => 'malfunction_Смещение калипера от плоскости ротора',
         ],
-        // TODO: remove
-        [
-            'name' => 'Тестовая неисправность без признаков',
-            'clinicalPicture' => [
-            ],
-            '_ref' => 'malfunction_Неисправность без признаков',
-        ],
-        [
-            'name' => 'Тестовая неисправность с целочисленным признаком',
-            'clinicalPicture' => [
-                'feature_Тестовый целочисленный признак',
-            ],
-            '_ref' => 'malfunction_Тестовая неисправность с целочисленным признаком',
-        ],
     ];
 
     public function load(ObjectManager $manager)
