@@ -66,7 +66,7 @@ class ClinicalPictureController extends AbstractReactController
 
         foreach ($updatedMalfunctionIds as $id) {
             $updatedFeatureIds = array_map('\intval', $malfunctions[$id]['updatedIds']);
-            $selectedFeatureIds = array_map('\intval', $malfunctions[$id]['selectedFeatureIds']);
+            $selectedFeatureIds = array_map('\intval', $malfunctions[$id]['selectedFeatureIds'] ?? []);
 
             foreach ($updatedFeatureIds as $featureId) {
                 $malfunctionToUpdate = $malfunctionIdToEntityMap[$id];
