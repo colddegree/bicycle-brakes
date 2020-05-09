@@ -92,7 +92,10 @@ class ClinicalPictureController extends AbstractReactController
         /** @var Malfunction[] $malfunctions */
         $malfunctions = $this->malfunctionRepository->findAll();
 
-        $result = [];
+        $result = [
+            'malfunctions' => [],
+            'allFeatures' => [],
+        ];
 
         foreach ($malfunctions as $malfunction) {
             $item = [
