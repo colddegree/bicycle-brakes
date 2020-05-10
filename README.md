@@ -13,6 +13,16 @@ $ bin/console d:f:l
 
 bin/console d:d:d --force && bin/console d:d:c && bin/console d:m:m -n && bin/console d:f:l -n
 
+### Базовая авторизация в /редактор-знаний/
+
+Реализовано через .htpasswd
+
+Хэш пароля генерим через [CRYPT_STD_DES](https://www.php.net/manual/ru/function.crypt.php):
+```sh
+# в docker/
+$ docker-compose exec php-fpm php -r 'echo crypt("password", "salt");'
+```
+
 ## TODO
 
 - [ ] оптимизнуть получение возможных значений признаков

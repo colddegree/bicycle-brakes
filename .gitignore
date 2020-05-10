@@ -15,7 +15,7 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
-.idea/
+/.idea/
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
@@ -23,3 +23,5 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+/.htpasswd
