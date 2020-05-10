@@ -143,7 +143,8 @@ const Root = ({ features }) => {
                     </>
                 ) : currentFeature.type === INT.id ? (
                     <>
-                    <p style={{ marginBottom: 0 }}>Введите значение:</p>
+                        <p>Область возможных значений: {currentFeature.possibleValueDomain}</p>
+                        <p style={{ marginBottom: 0 }}>Введите значение:</p>
                         <InputNumber
                             type="number"
                             min={INT_MIN}
@@ -155,6 +156,7 @@ const Root = ({ features }) => {
                     </>
                 ) : currentFeature.type === REAL.id ? (
                     <>
+                        <p>Область возможных значений: {currentFeature.possibleValueDomain}</p>
                         <p style={{ marginBottom: 0 }}>Введите значение:</p>
                         <InputNumber
                             type="number"
@@ -191,6 +193,7 @@ Root.propTypes = {
             id: PropTypes.number.isRequired,
             value: PropTypes.string.isRequired,
         })),
+        possibleValueDomain: PropTypes.string,
     })).isRequired,
 };
 

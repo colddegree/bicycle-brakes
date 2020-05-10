@@ -8,6 +8,7 @@ use App\Entity\Feature;
 use App\Entity\FeaturePossibleValue;
 use App\Entity\IntValue;
 use App\Entity\RealValue;
+use App\IntervalMerger;
 use App\KnowledgeTree\SubsetValidator;
 use App\Mapper\IntIntervalsToStringMapper;
 use App\Mapper\RealIntervalsToStringMapper;
@@ -27,19 +28,22 @@ class SolverController extends AbstractReactController
     private SubsetValidator $subsetValidator;
     private IntIntervalsToStringMapper $intIntervalsToStringMapper;
     private RealIntervalsToStringMapper $realIntervalsToStringMapper;
+    private IntervalMerger $intervalMerger;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         Solver $solver,
         SubsetValidator $subsetValidator,
         IntIntervalsToStringMapper $intIntervalsToStringMapper,
-        RealIntervalsToStringMapper $realIntervalsToStringMapper
+        RealIntervalsToStringMapper $realIntervalsToStringMapper,
+        IntervalMerger $intervalMerger
     ) {
         $this->featureRepository = $entityManager->getRepository(Feature::class);
         $this->solver = $solver;
         $this->subsetValidator = $subsetValidator;
         $this->intIntervalsToStringMapper = $intIntervalsToStringMapper;
         $this->realIntervalsToStringMapper = $realIntervalsToStringMapper;
+        $this->intervalMerger = $intervalMerger;
     }
 
     /**
@@ -214,7 +218,7 @@ class SolverController extends AbstractReactController
     private function getData(): array
     {
         return [
-            'features' => array_map(static fn (Feature $f) => [
+            'features' => array_map(fn (Feature $f) => [
                 'id' => $f->id,
                 'name' => $f->name,
                 'type' => $f->type,
@@ -224,7 +228,30 @@ class SolverController extends AbstractReactController
                         'id' => $fpv->scalarValue->id,
                         'value' => $fpv->scalarValue->value,
                     ])->toArray(),
+                'possibleValueDomain' => $f->type === Feature::TYPE_SCALAR
+                    ? null
+                    : $this->mapFeatureNumericPossibleValuesToString($f),
             ], $this->featureRepository->findAll()),
         ];
+    }
+
+    private function mapFeatureNumericPossibleValuesToString(Feature $f): string
+    {
+        switch ($f->type) {
+            case Feature::TYPE_INT:
+                return $this->intIntervalsToStringMapper->map(
+                    $this->intervalMerger->mergeInt(
+                        $f->possibleValues->map(static fn (FeaturePossibleValue $fpv) => $fpv->intValue)->toArray(),
+                    ),
+                );
+            case Feature::TYPE_REAL:
+                return $this->realIntervalsToStringMapper->map(
+                    $this->intervalMerger->mergeReal(
+                        $f->possibleValues->map(static fn (FeaturePossibleValue $fpv) => $fpv->realValue)->toArray(),
+                    ),
+                );
+            default:
+                throw new RuntimeException(sprintf('Unsupported type "%s"', $f->type));
+        }
     }
 }
