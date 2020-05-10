@@ -26,7 +26,6 @@ class Solver
     private ObjectRepository $malfunctionRepository;
     private IntIntervalsToStringMapper $intIntervalsToStringMapper;
     private RealIntervalsToStringMapper $realIntervalsToStringMapper;
-
     private ObjectRepository $malfunctionFeatureValueBindRepository;
 
     public function __construct(
@@ -40,7 +39,6 @@ class Solver
         $this->malfunctionRepository = $entityManager->getRepository(Malfunction::class);
         $this->intIntervalsToStringMapper = $intIntervalsToStringMapper;
         $this->realIntervalsToStringMapper = $realIntervalsToStringMapper;
-
         $this->malfunctionFeatureValueBindRepository = $entityManager->getRepository(MalfunctionFeatureValueBind::class);
     }
 
@@ -60,7 +58,9 @@ class Solver
         /** @var Feature[] $features */
         $features = $this->featureRepository->findBy(['id' => array_keys($idToDtoMap)]);
 
-        // 1. Проверяется гипотеза, что велосипед исправен, т.е. проверяется, что для каждого заданного признака наблюдаемое значение является нормальным значением этого признака.
+        // 1. Проверяется гипотеза, что велосипед исправен, т.е. проверяется, что для каждого заданного признака
+        // наблюдаемое значение является нормальным значением этого признака.
+
         $allFeatureValuesAreNormal = array_reduce(
             $features,
             fn (bool $acc, Feature $f) => $acc = ($acc && $this->featureValueIsNormal($f, $idToDtoMap[$f->id])),
@@ -71,10 +71,15 @@ class Solver
             return ['Тормозная система велосипеда исправна, так как все заданные значения признаков являются нормальными.'];
         }
 
+
         $disprovedMalfunctionIds = [];
 
-        // 2. Если гипотеза подзадачи 1 опровергнута, то для каждой неисправности m проверяется гипотеза о том, что велосипед имеет неисправность m. Эта подзадача может быть разбита на следующие подзадачи.
-        // 2.1. Для каждого признака, не принадлежащего клинической картине неисправности m, проверяется гипотеза о том, что этот признак имеет только нормальные значения. Если по крайней мере для одного признака эта гипотеза опровергнута, то и гипотеза подзадачи 2 также опровергнута.
+        // 2. Если гипотеза подзадачи 1 опровергнута, то для каждой неисправности m проверяется гипотеза о том,
+        // что велосипед имеет неисправность m. Эта подзадача может быть разбита на следующие подзадачи.
+        //
+        // 2.1. Для каждого признака, не принадлежащего клинической картине неисправности m, проверяется гипотеза о том,
+        // что этот признак имеет только нормальные значения. Если по крайней мере для одного признака эта гипотеза
+        // опровергнута, то и гипотеза подзадачи 2 также опровергнута.
 
         /** @var Malfunction[] $malfunctions */
         $malfunctions = $this->malfunctionRepository->findAll();
@@ -98,29 +103,37 @@ class Solver
 
             if ($contradictionFeature !== null) {
                 $messages[] = sprintf(
-                    'Неисправность "%s" опровергнута, так как значение "%s" признака "%s" (не из клинической картины неисправности) не является нормальным.',
+                    'Неисправность "%s (#%d)" опровергнута, так как значение "%s" признака "%s (#%d)" (не из клинической картины неисправности) не является нормальным.',
                     $m->name,
+                    $m->id,
                     $this->mapValueToString($contradictionFeature, $idToDtoMap[$contradictionFeature->id]),
                     $contradictionFeature->name,
+                    $contradictionFeature->id,
                 );
             }
         }
 
         if (!empty($messages)) {
-            $messages = $this->addPossibleMalfunctionMessage($messages, $malfunctions, $disprovedMalfunctionIds);
+            $messages = $this->addPossibleMalfunctionMessages($messages, $malfunctions, $disprovedMalfunctionIds);
             return $messages;
         }
 
-        // 2.2. Если ни одна из гипотез подзадачи 2.1 не опровергнута, то для каждого заданного признака f, принадлежащего клинической картине неисправности m, проверяется гипотеза о том, что все наблюдаемые значения признака f, согласуются с описанием клинического проявления для этого признака и неисправности m. Если ни одна из этих гипотез не опровергнута, то и гипотеза подзадачи 2 также не опровергнута.
+
+        // 2.2. Если ни одна из гипотез подзадачи 2.1 не опровергнута, то для каждого заданного признака f,
+        // принадлежащего клинической картине неисправности m, проверяется гипотеза о том, что все наблюдаемые значения
+        // признака f, согласуются с описанием клинического проявления для этого признака и неисправности m.
+        // Если ни одна из этих гипотез не опровергнута, то и гипотеза подзадачи 2 также не опровергнута.
 
         foreach ($malfunctions as $m) {
             foreach ($m->features->filter(static fn (Feature $f) => array_key_exists($f->id, $idToDtoMap)) as $f) {
                 if (!$this->check($m, $f, $idToDtoMap[$f->id])) {
                     $messages[] = sprintf(
-                        'Неисправность "%s" опровергнута, так как значение "%s" признака "%s" не соответствует описанию неисправности.',
+                        'Неисправность "%s (#%d)" опровергнута, так как значение "%s" признака "%s (#%d)" не соответствует описанию неисправности.',
                         $m->name,
+                        $m->id,
                         $this->mapValueToString($f, $idToDtoMap[$f->id]),
                         $f->name,
+                        $f->id,
                     );
                     $disprovedMalfunctionIds[] = $m->id;
                     break;
@@ -128,7 +141,7 @@ class Solver
             }
         }
 
-        $messages = $this->addPossibleMalfunctionMessage($messages, $malfunctions, $disprovedMalfunctionIds);
+        $messages = $this->addPossibleMalfunctionMessages($messages, $malfunctions, $disprovedMalfunctionIds);
         return $messages;
     }
 
@@ -139,7 +152,7 @@ class Solver
      *
      * @return string[]
      */
-    private function addPossibleMalfunctionMessage(
+    private function addPossibleMalfunctionMessages(
         array $messages,
         array $malfunctions,
         array $disprovedMalfunctionIds
@@ -153,9 +166,16 @@ class Solver
         $messages[] = '';
 
         if (count($possibleMalfunctions) === 1) {
-            $messages[] = sprintf('Выявленная неисправность: "%s".', reset($possibleMalfunctions)->name);
+            $messages[] = sprintf(
+                'Выявленная неисправность: "%s (#%d)".',
+                reset($possibleMalfunctions)->name,
+                reset($possibleMalfunctions)->id,
+            );
         } else {
-            $quotedNames = array_map(static fn (Malfunction $m) => sprintf('"%s"', $m->name), $possibleMalfunctions);
+            $quotedNames = array_map(
+                static fn (Malfunction $m) => sprintf('"%s (#%d)"', $m->name, $m->id),
+                $possibleMalfunctions,
+            );
             $messages[] = sprintf('Возможные неисправности: %s.', implode(', ', $quotedNames));
         }
 

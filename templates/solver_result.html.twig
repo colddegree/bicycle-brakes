@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h1 style="margin-top: 0; padding-top: 10px;">{{ name }}</h1>
+
+    <div>
+        {% for message in messages %}
+            <p>{{ message|raw }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
