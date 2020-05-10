@@ -29,7 +29,7 @@ class IntervalMerger
         for ($i = 1, $iMax = count($intervals); $i < $iMax; ++$i) {
             /** @var IntValue $topInterval */
             $topInterval = $stack->top();
-            if ($topInterval->upper >= $intervals[$i]->lower) {
+            if ($topInterval->upper >= $intervals[$i]->lower || ($intervals[$i]->lower === $topInterval->upper + 1)) {
                 $stack->pop();
                 $stack->push(new IntValue($topInterval->lower, max($intervals[$i]->upper, $topInterval->upper)));
             } else {

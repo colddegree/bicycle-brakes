@@ -114,7 +114,7 @@ class SubsetValidatorTest extends TestCase
             ],
             [
                 new IntValue(1, 2),
-                new IntValue(3, 7),
+                new IntValue(4, 7),
             ],
             false,
         ];

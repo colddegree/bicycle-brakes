@@ -36,10 +36,18 @@ class IntervalMergerTest extends TestCase
             [new IntValue(-1, 3)],
         ];
 
-        yield '2 интервала касаются' => [
+        yield '2 интервала касаются: конец первого равен началу второго' => [
             [
                 new IntValue(1, 3),
                 new IntValue(3, 5),
+            ],
+            [new IntValue(1, 5)],
+        ];
+
+        yield '2 интервала касаются: конец первого равен началу второго + 1' => [
+            [
+                new IntValue(1, 3),
+                new IntValue(4, 5),
             ],
             [new IntValue(1, 5)],
         ];
@@ -64,11 +72,11 @@ class IntervalMergerTest extends TestCase
             [
                 new IntValue(1, 3),
                 new IntValue(2, 4),
-                new IntValue(5, 7),
+                new IntValue(6, 7),
             ],
             [
                 new IntValue(1, 4),
-                new IntValue(5, 7),
+                new IntValue(6, 7),
             ],
         ];
 
@@ -80,14 +88,24 @@ class IntervalMergerTest extends TestCase
             [new IntValue(1, 1)],
         ];
 
-        yield '2 разные точки' => [
+        yield '2 разные точки: близко' => [
             [
                 new IntValue(1, 1),
                 new IntValue(2, 2),
             ],
             [
+                new IntValue(1, 2),
+            ],
+        ];
+
+        yield '2 разные точки: на 1 дальше' => [
+            [
                 new IntValue(1, 1),
-                new IntValue(2, 2),
+                new IntValue(3, 3),
+            ],
+            [
+                new IntValue(1, 1),
+                new IntValue(3, 3),
             ],
         ];
 
@@ -99,14 +117,24 @@ class IntervalMergerTest extends TestCase
             [new IntValue(1, 3)],
         ];
 
-        yield 'интервал и точка снаружи' => [
+        yield 'интервал и точка снаружи: близко' => [
             [
                 new IntValue(1, 3),
                 new IntValue(4, 4),
             ],
             [
+                new IntValue(1, 4),
+            ],
+        ];
+
+        yield 'интервал и точка снаружи: на 1 дальше' => [
+            [
                 new IntValue(1, 3),
-                new IntValue(4, 4),
+                new IntValue(5, 5),
+            ],
+            [
+                new IntValue(1, 3),
+                new IntValue(5, 5),
             ],
         ];
     }
