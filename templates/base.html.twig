@@ -12,8 +12,9 @@
             <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:25%;">
                 <h3 class="w3-bar-item">Меню</h3>
                 <ul style="list-style-type: none;">
-                    <li>Редактор знаний
-                        <ul style="list-style-type: none; margin-top: 7px;">
+                    <li><a class="w3-bar-item w3-button" href="{{ path('главная') }}">Главная</a></li>
+                    <li><a class="w3-bar-item w3-button" href="{{ path('редактор-знаний:признаки') }}">Редактор знаний</a>
+                        <ul style="list-style-type: none;">
                             <li><a class="w3-bar-item w3-button" href="{{ path('редактор-знаний:признаки') }}">Признаки</a></li>
                             <li><a class="w3-bar-item w3-button" href="{{ path('редактор-знаний:неисправности') }}">Неисправности</a></li>
                             <li><a class="w3-bar-item w3-button" href="{{ path('редактор-знаний:возможные-значения-признаков') }}">Возможные значения признаков</a></li>
