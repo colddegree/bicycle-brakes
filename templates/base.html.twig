@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <title>{% block title %}Система, основанная на знаниях{% endblock %}</title>
         {% block stylesheets %}
-            <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> {# стили для навигации #}
+            <link rel="stylesheet" type="text/css" href="{{asset('css/w3.css')}}"> {# стили для навигации #}
         {% endblock %}
     </head>
     <body>
