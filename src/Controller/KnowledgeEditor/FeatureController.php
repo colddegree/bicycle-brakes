@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\KnowledgeEditor;
 
+use App\Controller\AbstractReactController;
 use App\Entity\Feature;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
@@ -23,7 +24,7 @@ class FeatureController extends AbstractReactController
     }
 
     /**
-     * @Route("/признаки", name="признаки")
+     * @Route("/редактор-знаний/признаки", name="редактор-знаний:признаки")
      */
     public function index(Request $request): Response
     {

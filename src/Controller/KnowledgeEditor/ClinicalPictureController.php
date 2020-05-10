@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\KnowledgeEditor;
 
+use App\Controller\AbstractReactController;
 use App\Entity\Feature;
 use App\Entity\Malfunction;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,7 +27,7 @@ class ClinicalPictureController extends AbstractReactController
     }
 
     /**
-     * @Route("/клинические-картины", name="клинические-картины")
+     * @Route("/редактор-знаний/клинические-картины", name="редактор-знаний:клинические-картины")
      */
     public function index(Request $request): Response
     {

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\KnowledgeEditor;
 
+use App\Controller\AbstractReactController;
 use App\Entity\Feature;
 use App\Entity\FeaturePossibleValue;
 use App\Entity\IntValue;
@@ -47,7 +48,7 @@ class MalfunctionFeatureValueController extends AbstractReactController
     }
 
     /**
-     * @Route("/значения-признаков-неисправностей", name="значения-признаков-неисправностей")
+     * @Route("/редактор-знаний/значения-признаков-неисправностей", name="редактор-знаний:значения-признаков-неисправностей")
      */
     public function index(Request $request): Response
     {

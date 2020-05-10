@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\KnowledgeEditor;
 
+use App\Controller\AbstractReactController;
 use App\Entity\Feature;
 use App\Entity\FeatureNormalValue;
 use App\Entity\FeaturePossibleValue;
@@ -56,7 +57,7 @@ class FeatureNormalValueController extends AbstractReactController
     }
 
     /**
-     * @Route("/нормальные-значения-признаков", name="нормальные-значения-признаков")
+     * @Route("/редактор-знаний/нормальные-значения-признаков", name="редактор-знаний:нормальные-значения-признаков")
      */
     public function index(Request $request): Response
     {

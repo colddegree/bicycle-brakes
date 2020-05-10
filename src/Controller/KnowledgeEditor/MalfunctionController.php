@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\KnowledgeEditor;
 
+use App\Controller\AbstractReactController;
 use App\Entity\Malfunction;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
@@ -23,7 +24,7 @@ class MalfunctionController extends AbstractReactController
     }
 
     /**
-     * @Route("/неисправности", name="неисправности")
+     * @Route("/редактор-знаний/неисправности", name="редактор-знаний:неисправности")
      */
     public function index(Request $request): Response
     {

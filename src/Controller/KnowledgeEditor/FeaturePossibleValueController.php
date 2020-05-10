@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\KnowledgeEditor;
 
+use App\Controller\AbstractReactController;
 use App\Entity\Feature;
 use App\Entity\FeaturePossibleValue;
 use App\Entity\IntValue;
@@ -43,7 +44,7 @@ class FeaturePossibleValueController extends AbstractReactController
     }
 
     /**
-     * @Route("/возможные-значения-признаков", name="возможные-значения-признаков")
+     * @Route("/редактор-знаний/возможные-значения-признаков", name="редактор-знаний:возможные-значения-признаков")
      */
     public function index(Request $request): Response
     {
