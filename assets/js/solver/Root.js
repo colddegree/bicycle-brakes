@@ -172,7 +172,7 @@ const Root = ({ features }) => {
                     <p>Неизвестный тип</p>
                 )}
 
-                <form method="post" style={{ marginTop: '24px' }}>
+                <form style={{ marginTop: '24px' }}>
                     {Object.entries(featureIdToValueMap).map(([id, value]) => (
                         <input key={id} type="hidden" name={id} value={value} />
                     ))}

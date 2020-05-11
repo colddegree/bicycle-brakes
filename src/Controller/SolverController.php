@@ -53,7 +53,7 @@ class SolverController extends AbstractReactController
     {
         $pageName = 'Решатель задач';
 
-        if ($request->isMethod(Request::METHOD_POST)) {
+        if (!empty($request->query->all())) {
             $messages = $this->processRequest($request);
             $messages = array_map(static fn (string $s) => $s === '' ? '<br>' : $s, $messages);
             return $this->render('solver_result.html.twig', [
@@ -78,7 +78,7 @@ class SolverController extends AbstractReactController
      */
     private function processRequest(Request $request): array
     {
-        $featureIdToValueMap = $request->request->all();
+        $featureIdToValueMap = $request->query->all();
 
         $dtos = array_map(
             static fn($k, $v) => new FeatureDto((int)$k, $v),
