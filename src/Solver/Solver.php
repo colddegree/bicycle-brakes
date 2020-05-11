@@ -165,7 +165,9 @@ class Solver
 
         $messages[] = '';
 
-        if (count($possibleMalfunctions) === 1) {
+        if (count($possibleMalfunctions) < 1) {
+            $messages[] = 'Нет подходящих неисправностей. 🤔';
+        } elseif (count($possibleMalfunctions) === 1) {
             $messages[] = sprintf(
                 'Выявленная неисправность: "%s (#%d)".',
                 reset($possibleMalfunctions)->name,
