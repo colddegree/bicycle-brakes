@@ -7,6 +7,7 @@ namespace App\Controller\KnowledgeEditor;
 use App\Controller\AbstractReactController;
 use App\Entity\Feature;
 use App\Entity\Malfunction;
+use App\Entity\MalfunctionFeatureValueBind;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +19,14 @@ class ClinicalPictureController extends AbstractReactController
     private EntityManagerInterface $entityManager;
     private ObjectRepository $malfunctionRepository;
     private ObjectRepository $featureRepository;
+    private ObjectRepository $malfunctionFeatureValueBindRepository;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->malfunctionRepository = $this->entityManager->getRepository(Malfunction::class);
         $this->featureRepository = $this->entityManager->getRepository(Feature::class);
+        $this->malfunctionFeatureValueBindRepository = $this->entityManager->getRepository(MalfunctionFeatureValueBind::class);
     }
 
     /**
@@ -76,11 +79,22 @@ class ClinicalPictureController extends AbstractReactController
                     // добавить к неисправности признак
                     $feature = $this->featureRepository->find($featureId);
                     $malfunctionToUpdate->features->add($feature);
+
+                    // создать связку со значением
+                    $bind = new MalfunctionFeatureValueBind($malfunctionToUpdate, $feature);
+                    $this->entityManager->persist($bind);
                 } else {
                     // удалить у неисправности признак
                     /** @var Feature $feature */
                     $feature = $malfunctionToUpdate->features->filter(static fn (Feature $f) => $f->id === $featureId)->first();
                     $malfunctionToUpdate->features->removeElement($feature);
+
+                    // удалить связку со значением
+                    $bind = current($this->malfunctionFeatureValueBindRepository->findBy([
+                        'malfunction' => $malfunctionToUpdate,
+                        'feature' => $feature,
+                    ]));
+                    $this->entityManager->remove($bind);
                 }
             }
         }
