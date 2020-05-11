@@ -16,7 +16,13 @@ class RealIntervalsToStringMapper
     public function map(array $intervals): string
     {
         $intervalStrings = array_map(fn(RealValue $int) => $this->mapIntervalToString($int), $intervals);
-        return implode(' ∪ ', array_filter($intervalStrings));
+        $intervalStrings = array_filter($intervalStrings);
+
+        if (empty($intervalStrings)) {
+            return '∅';
+        }
+
+        return implode(' ∪ ', $intervalStrings);
     }
 
     private function mapIntervalToString(RealValue $int): string

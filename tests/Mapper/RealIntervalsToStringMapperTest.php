@@ -48,7 +48,7 @@ class RealIntervalsToStringMapperTest extends TestCase
             [
                 new RealValue(1, false,1, true),
             ],
-            '',
+            '∅',
         ];
 
         yield 'интервал и вырожденная точка' => [
@@ -57,6 +57,19 @@ class RealIntervalsToStringMapperTest extends TestCase
                 new RealValue(3, false,3, true),
             ],
             '[0,5; 1)',
+        ];
+
+        yield 'пустое множество' => [
+            [],
+            '∅',
+        ];
+
+        yield '2 вырожденных точки' => [
+            [
+                new RealValue(1, false,1, true),
+                new RealValue(2, false,2, false),
+            ],
+            '∅',
         ];
     }
 }

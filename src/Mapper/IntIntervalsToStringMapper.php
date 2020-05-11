@@ -15,6 +15,10 @@ class IntIntervalsToStringMapper
      */
     public function map(array $intervals): string
     {
+        if (empty($intervals)) {
+            return '∅';
+        }
+
         $intervalStrings = array_map(fn(IntValue $int) => $this->mapIntervalToString($int), $intervals);
         return implode(' ∪ ', $intervalStrings);
     }
