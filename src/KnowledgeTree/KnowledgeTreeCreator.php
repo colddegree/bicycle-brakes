@@ -46,9 +46,14 @@ class KnowledgeTreeCreator
 
     public function create(): array
     {
+        [$featuresAreOk, $featureSubtree] = $this->fetchFeatureSubtree();
+        [$malfunctionsAreOk, $malfunctionsSubtree] = $this->fetchMalfunctionsSubtree();
         return [
-            'features' => $this->fetchFeatureSubtree(),
-            'malfunctions' => $this->fetchMalfunctionsSubtree(),
+            $featuresAreOk && $malfunctionsAreOk,
+            [
+                'features' => $featureSubtree,
+                'malfunctions' => $malfunctionsSubtree,
+            ],
         ];
     }
 
@@ -59,9 +64,16 @@ class KnowledgeTreeCreator
         /** @var Feature[] $features */
         $features = $this->featureRepository->findAll();
 
+        $possibleValuesAreOk = true;
+        $normalValuesAreOk = true;
+
         foreach ($features as $f) {
-            [$possibleValuesSummary, $possibleValues] = $this->fetchFeaturePossibleValuesSubtree($f);
-            [$normalValuesSummary, $normalValues] = $this->fetchNormalValuesSubtree($f);
+            [$fpvsIsOk, $possibleValuesSummary, $possibleValues] = $this->fetchFeaturePossibleValuesSubtree($f);
+            [$fnvsIsOk, $normalValuesSummary, $normalValues] = $this->fetchFeatureNormalValuesSubtree($f);
+
+            $possibleValuesAreOk = $possibleValuesAreOk && $fpvsIsOk;
+            $normalValuesAreOk = $normalValuesAreOk && $fnvsIsOk;
+
             $tree[] = [
                 'id' => $f->id,
                 'name' => $f->name,
@@ -77,7 +89,10 @@ class KnowledgeTreeCreator
             ];
         }
 
-        return $tree;
+        return [
+            $possibleValuesAreOk && $normalValuesAreOk,
+            $tree,
+        ];
     }
 
     private function fetchFeaturePossibleValuesSubtree(Feature $feature): array
@@ -126,6 +141,7 @@ class KnowledgeTreeCreator
         }
 
         return [
+            !empty($ids),
             $summary,
             array_map(static fn (int $id, string $value) => [
                 'id' => $id,
@@ -134,7 +150,7 @@ class KnowledgeTreeCreator
         ];
     }
 
-    private function fetchNormalValuesSubtree(Feature $feature): array
+    private function fetchFeatureNormalValuesSubtree(Feature $feature): array
     {
         switch ($feature->type) {
             case Feature::TYPE_SCALAR:
@@ -204,6 +220,7 @@ class KnowledgeTreeCreator
         }
 
         return [
+            !empty($ids) && array_reduce($isSubsetOfPossibleValuesFlags, static fn (bool $acc, bool $f) => $acc && $f, true),
             $summary,
             array_map(static fn (int $id, string $value, bool $flag) => [
                 'id' => $id,
@@ -220,23 +237,39 @@ class KnowledgeTreeCreator
         /** @var Malfunction[] $malfunctions */
         $malfunctions = $this->malfunctionRepository->findAll();
 
+        $malfunctionsAreOk = true;
+        if (empty($malfunctions)) {
+            $malfunctionsAreOk = false;
+        }
+
         foreach ($malfunctions as $m) {
+            $malfunctionIsOk = false;
+
             $tree[] = [
                 'id' => $m->id,
                 'name' => $m->name,
-                'clinicalPicture' => $m->features->map(fn (Feature $f) => [
-                    'id' => $f->id,
-                    'name' => $f->name,
-                    'malfunctionFeatureValues' => $this->fetchMalfunctionFeatureValuesSubtree(
+                'clinicalPicture' => $m->features->map(function (Feature $f) use ($m, &$malfunctionIsOk) {
+                    [$ok, $malfunctionFeatureValuesSubtree] = $this->fetchMalfunctionFeatureValuesSubtree(
                         current($this->malfunctionFeatureValueBindRepository->findBy([
                             'malfunction' => $m,
                             'feature' => $f,
-                        ]))),
-                ])->toArray(),
+                        ]))
+                    );
+
+                    $malfunctionIsOk = $ok;
+
+                    return [
+                        'id' => $f->id,
+                        'name' => $f->name,
+                        'malfunctionFeatureValues' => $malfunctionFeatureValuesSubtree,
+                    ];
+                })->toArray(),
             ];
+
+            $malfunctionsAreOk = $malfunctionsAreOk && $malfunctionIsOk;
         }
 
-        return $tree;
+        return [$malfunctionsAreOk, $tree];
     }
 
     private function fetchMalfunctionFeatureValuesSubtree(MalfunctionFeatureValueBind $bind): array
@@ -320,19 +353,32 @@ class KnowledgeTreeCreator
         }
 
         return [
-            'summary' => $summary,
-            'values' => array_map(
-                static fn (int $id, string $value, bool $subsetFlag, bool $intersectFlag) => [
-                    'id' => $id,
-                    'value' => $value,
-                    'isSubsetOfPossibleValues' => $subsetFlag,
-                    'isIntersectsWithNormalValues' => $intersectFlag,
-                ],
-                $ids,
-                $stringValues,
-                $isSubsetOfPossibleValuesFlags,
-                $isIntersectsWithNormalValuesFlags,
-            ),
+            !empty($ids)
+                && array_reduce(
+                    $isSubsetOfPossibleValuesFlags,
+                    static fn (bool $acc, bool $isSubsetOfPossibleValues) => $acc && $isSubsetOfPossibleValues,
+                    true
+                )
+                && array_reduce(
+                    $isIntersectsWithNormalValuesFlags,
+                    static fn (bool $acc, bool $isIntersectsWithNormalValues) => $acc && !$isIntersectsWithNormalValues,
+                    true
+                ),
+            [
+                'summary' => $summary,
+                'values' => array_map(
+                    static fn (int $id, string $value, bool $subsetFlag, bool $intersectFlag) => [
+                        'id' => $id,
+                        'value' => $value,
+                        'isSubsetOfPossibleValues' => $subsetFlag,
+                        'isIntersectsWithNormalValues' => $intersectFlag,
+                    ],
+                    $ids,
+                    $stringValues,
+                    $isSubsetOfPossibleValuesFlags,
+                    $isIntersectsWithNormalValuesFlags,
+                ),
+            ],
         ];
     }
 }

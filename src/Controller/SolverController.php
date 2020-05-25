@@ -9,6 +9,7 @@ use App\Entity\FeaturePossibleValue;
 use App\Entity\IntValue;
 use App\Entity\RealValue;
 use App\IntervalMerger;
+use App\KnowledgeTree\KnowledgeTreeCreator;
 use App\KnowledgeTree\SubsetValidator;
 use App\Mapper\IntIntervalsToStringMapper;
 use App\Mapper\RealIntervalsToStringMapper;
@@ -29,6 +30,7 @@ class SolverController extends AbstractReactController
     private IntIntervalsToStringMapper $intIntervalsToStringMapper;
     private RealIntervalsToStringMapper $realIntervalsToStringMapper;
     private IntervalMerger $intervalMerger;
+    private KnowledgeTreeCreator $knowledgeTreeCreator;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -36,7 +38,8 @@ class SolverController extends AbstractReactController
         SubsetValidator $subsetValidator,
         IntIntervalsToStringMapper $intIntervalsToStringMapper,
         RealIntervalsToStringMapper $realIntervalsToStringMapper,
-        IntervalMerger $intervalMerger
+        IntervalMerger $intervalMerger,
+        KnowledgeTreeCreator $knowledgeTreeCreator
     ) {
         $this->featureRepository = $entityManager->getRepository(Feature::class);
         $this->solver = $solver;
@@ -44,6 +47,7 @@ class SolverController extends AbstractReactController
         $this->intIntervalsToStringMapper = $intIntervalsToStringMapper;
         $this->realIntervalsToStringMapper = $realIntervalsToStringMapper;
         $this->intervalMerger = $intervalMerger;
+        $this->knowledgeTreeCreator = $knowledgeTreeCreator;
     }
 
     /**
@@ -53,22 +57,34 @@ class SolverController extends AbstractReactController
     {
         $pageName = 'Решатель задач';
 
-        if (!empty($request->query->all())) {
-            $messages = $this->processRequest($request);
-            $messages = array_map(static fn (string $s) => $s === '' ? '<br>' : $s, $messages);
-            return $this->render('solver_result.html.twig', [
-                'name' => $pageName . ' (решение)',
-                'messages' => $messages,
+        if (!$this->isKnowledgeConsistent()) {
+            return $this->render('solver_inconsistent_knowledge.html.twig', [
+                'name' => $pageName,
             ]);
         }
 
-        return $this->renderPageWithReact(
-            $pageName,
-            $pageName,
-            $this->getData(),
-            'solver',
-            true,
-        );
+        if (empty($request->query->all())) {
+            return $this->renderPageWithReact(
+                $pageName,
+                $pageName,
+                $this->getData(),
+                'solver',
+                true,
+            );
+        }
+
+        $messages = $this->processRequest($request);
+        $messages = array_map(static fn (string $s) => $s === '' ? '<br>' : $s, $messages);
+        return $this->render('solver_result.html.twig', [
+            'name' => $pageName . ' (решение)',
+            'messages' => $messages,
+        ]);
+    }
+
+    private function isKnowledgeConsistent(): bool
+    {
+        [$isConsistent, ] = $this->knowledgeTreeCreator->create();
+        return $isConsistent;
     }
 
     /**

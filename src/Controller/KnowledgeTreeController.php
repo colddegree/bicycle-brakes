@@ -23,10 +23,11 @@ class KnowledgeTreeController extends AbstractReactController
     public function index(): Response
     {
         $name = 'Дерево знаний';
+        [, $tree] = $this->knowledgeTreeCreator->create();
         return $this->renderPageWithReact(
             $name,
             $name,
-            $this->knowledgeTreeCreator->create(),
+            $tree,
             'knowledge-tree',
             true,
         );
